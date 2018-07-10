@@ -23,7 +23,6 @@ contract DApptasticFactory {
     enum Goal {WORKOUT, CREATIVE_WORK, MEDITATE}
     enum Status {STARTED, NOT_STARTED, SUCCESS, FAILED}
     enum RecipientType {DAPPTASTIC, OTHER_USER, RANDOM_USER}
-    enum Status {STARTED, NOT_STARTED, SUCCESS, FAILED}
 
     struct Pledge {
         string infoIpfsHash;
@@ -60,30 +59,32 @@ contract DApptasticFactory {
         _;
     }
 
-    modifier restricted() {
+    /*modifier restricted() {
         require(msg.sender == pledger);
         _;
-    }
+    }*/
 
-    function userExists() public view returns(bool) {
-        return userPledges[msg.sender].isValue);
-    }
+    /*function userExists() public view returns(bool) {
+        return userPledges[msg.sender].isValue;
+    }*/
 
 
-    function createUser(string avatarInfo) public {
-        allUsers.push(User({
+    /*function createUser(string avatarInfo) public {
+        /*allUsers.push(User({
             address: msg.sender,
             avatarInfo: avatarInfo
         }));
-    }
+        allUsers.push(msg.sender);
+        allUsers[msg.sender] = avatarInfo;
+    }*/
     
 
-    function createPledge(Goal goal, uint stakeAmt, 
+    /*function createPledge(Goal goal, uint stakeAmt, 
         RecipientType recipientType, address recipientAdddress) public payable {
         
         require (msg.balance >= stakeAmt);
         
-        string ipfsHashAddress = ''. //create ipfs file and get hash for this info.
+        string ipfsHashAddress = ''; //create ipfs file and get hash for this info.
         userPledges[msg.sender] = ipfsHashAddress;
 
         userPledges[msg.sender].push(Pledge({
@@ -94,14 +95,14 @@ contract DApptasticFactory {
         //send back any extra amount
 
         totalPledgeCount++;
-    }
+    }*/
 
 
     function createCheckin() {
         
     }
 
-    function getPledgesForUser(address userAddress) public view returns (User, Pledge[]) {
+    /*function getPledgesForUser(address userAddress) public view returns (User, Pledge[]) {
 
         return(data1,data2);
     }
@@ -110,5 +111,5 @@ contract DApptasticFactory {
 
         return(data1,data2);
         return allPledges;
-    }
+    }*/
 }

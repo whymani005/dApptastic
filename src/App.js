@@ -28,7 +28,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      web3Network: '',
+      web3Network: 'Unknown',
       web3Accounts: [],
       adopters: [],
       owner: ''
@@ -42,11 +42,13 @@ class App extends Component {
     const adopters = await this.adoptionInstance.getAdopters();
     const accounts = await web3.eth.getAccounts();
     const networkId = this.getNetworkName(await web3.eth.net.getId());
-    this.setState({ adopters: adopters, web3Accounts: accounts, web3Network: networkId});
+    const owner = await this.adoptionInstance.owner();
+    this.setState({ owner: owner, adopters: adopters, web3Accounts: accounts, web3Network: networkId});
   }
 
   async getOwner() {
     const owner = await this.adoptionInstance.owner();
+    console.log('WONEERRR ehreeee: ',owner);
     this.setState({ owner: owner });
   }
 
@@ -67,7 +69,11 @@ class App extends Component {
     return (
       <Card fluid color='red'>
         <Card.Content>
-          <Card.Header>Current web3 Provider Info</Card.Header>
+          <Card.Header>
+            <div>Deployed by: {this.state.owner}</div>
+            <br />
+            <div>Current web3 Provider Info</div>
+          </Card.Header>
           <Card.Meta>Network: {this.state.web3Network}</Card.Meta>
           <Card.Description>{this.renderAccounts()}</Card.Description>
         </Card.Content>
@@ -86,6 +92,7 @@ class App extends Component {
         <div className="metamaskDiv">
           {this.renderProviderInfo()}
         </div>
+        <button onClick={this.getOwner}>Get Deployer Address!</button>
         <br />
         <div>
           {this.props.children}
