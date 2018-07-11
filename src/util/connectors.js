@@ -5,6 +5,8 @@ import { Connect, SimpleSigner } from 'uport-connect';
 //essentially connected our react app with uPort decentralized platform
 //uPort has deployed registeries only on certain test networks - rinkeby or ropsten or kovan
 
+//const uportClientId = process.env.UPORT_CLIENT_ID;
+//const uportSimpleSigner = SimpleSigner(process.env.UPORT_SIMPLE_SIGNER);
 
 export let uport = new Connect('dApptastic_test', {
   clientId: '2owP5S2LZSLz6Vk3hVy2gEEwmVqucW6PDc3',

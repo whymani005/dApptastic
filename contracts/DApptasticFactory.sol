@@ -12,7 +12,7 @@ pragma solidity ^0.4.24;
 /*
 == userInfo ==
 {
-  "uPortID": "0x983o932uf349223ls357",
+  "uPortAddress": "2opcbYK76MfUMxDroNCLMJeTMg4YBmwd6zq",
   "avatar": {
     "topType": "",
     "accessoriesType": "",
@@ -64,12 +64,19 @@ contract PledgeFactory {
 contract Pledge {
     
     address public pledger;
+    string public pledgerUPortId;
     address public recipient;
     string public pledgeInfo;
     uint public creationDate;
     uint public value;
 
     bool active;
+
+    modifier restricted(string _uPortId) { 
+        require (pledgerUPortId == _uPortId); 
+        _; 
+    }
+    
 
     
     constructor(address _pledger , address _recipient, uint _money) public payable {
