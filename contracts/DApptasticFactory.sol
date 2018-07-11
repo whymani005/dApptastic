@@ -1,9 +1,18 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.24;
 
 /*
-== infoIpfsHash ==
+== pledgeIpfsHash ==
 {
-  "createDate": "07/02/2018",
+  "goalType": "WORKOUT",
+  "status": "STARTED",
+  "checkins": [1,2,3,7,8,16,18]
+}
+*/
+
+/*
+== userInfo ==
+{
+  "uPortID": "0x983o932uf349223ls357",
   "avatar": {
     "topType": "",
     "accessoriesType": "",
@@ -11,105 +20,65 @@ pragma solidity ^0.4.17;
     "facialHairType": "",
     "facialHairColor": ""
   },
-  "goal": "WORKOUT",
-  "status": "STARTED",
-  "checkins": [1,2,3,7,8,4]
+  "totalAcctBalanceWei": "347"
 }
 */
 
-
-contract DApptasticFactory {
-
+contract PledgeFactory {
+    
     enum Goal {WORKOUT, CREATIVE_WORK, MEDITATE}
     enum Status {STARTED, NOT_STARTED, SUCCESS, FAILED}
     enum RecipientType {DAPPTASTIC, OTHER_USER, RANDOM_USER}
-
-    struct Pledge {
-        string infoIpfsHash;
-        uint dateAdded;
-    }
-
-    /*struct User {
-        address userAddress;
-        string avatarInfo;
-    }*/
-
-    /*Platform owner - dApp creater*/
+    
+    uint constant minPrice = 0.01 ether;
+    uint32 constant totalPledgeLength = 30 days;
+    
     address public owner;
-    uint public totalPledgeCount;
-
-    /*array, not a mapping because to get ALL pledges, 
-    we need to loop, whcih we cant do with a mapping
+    uint public allTimePledgedAmt;
+    address[] public newPledges;
     
-    So we need to either keep array of all pledge objects, or user objects.
-    Chose user objects, because in theory: there will be one user to many pledges.
-    So we will save memory by saving the smaller data set of the two.
-    Then, we can just loop users array and get all pledges for that user address
-    using the userPledges mapping which is constant lookup time.
-    */
-    //User[] public allUsers; 
-    address[] public allUsers; 
-
-    mapping(address => string) userProfileInfo;
-    mapping(address => Pledge[]) public userPledges; //no way to get around this.
-
-
-    modifier adminOnly() {
-        require(msg.sender == owner);
-        _;
+    constructor() public {
+        owner = msg.sender;
     }
 
-    /*modifier restricted() {
-        require(msg.sender == pledger);
-        _;
-    }*/
+    function createPledge(address _recipient, uint _money) public payable {
+        //require(pledgeAmt >= totalPledgeLength*minPrice);
+        //https://stackoverflow.com/questions/49851273/solidity-payable-constructor-from-contract
+        address newPledge = (new Pledge).value(msg.value)(msg.sender, _recipient, _money);
+        newPledges.push(newPledge);
+        allTimePledgedAmt += msg.value; 
+        
+        //send any extra eth back
+    }
 
-    /*function userExists() public view returns(bool) {
-        return userPledges[msg.sender].isValue;
-    }*/
+    function getDeployedPledges() public view returns (address[]) {
+        return newPledges;
+    }
+}
 
 
-    /*function createUser(string avatarInfo) public {
-        /*allUsers.push(User({
-            address: msg.sender,
-            avatarInfo: avatarInfo
-        }));
-        allUsers.push(msg.sender);
-        allUsers[msg.sender] = avatarInfo;
-    }*/
+/**
+ * @title Pledge to hold goal info & pledged ether to be returned either to pledger or recipient
+ * @dev The pledge can be controlled only by the pledger and can only send ether to the set recipient.
+ */
+contract Pledge {
     
+    address public pledger;
+    address public recipient;
+    string public pledgeInfo;
+    uint public creationDate;
+    uint public value;
 
-    /*function createPledge(Goal goal, uint stakeAmt, 
-        RecipientType recipientType, address recipientAdddress) public payable {
-        
-        require (msg.balance >= stakeAmt);
-        
-        string ipfsHashAddress = ''; //create ipfs file and get hash for this info.
-        userPledges[msg.sender] = ipfsHashAddress;
+    bool active;
 
-        userPledges[msg.sender].push(Pledge({
-            ifpsHash: ipfsHashAddress,
-            dateAdded: now
-        }));
-
-        //send back any extra amount
-
-        totalPledgeCount++;
-    }*/
-
-
-    function createCheckin() {
-        
+    
+    constructor(address _pledger , address _recipient, uint _money) public payable {
+        require(msg.value >= _money);
+        pledger = _pledger;
+        recipient = _recipient;
+        creationDate = now;
+        active = true;
+        value = msg.value;
     }
 
-    /*function getPledgesForUser(address userAddress) public view returns (User, Pledge[]) {
-
-        return(data1,data2);
-    }
-
-    function getAllPledges() public view returns (User, Pledge[]) {
-
-        return(data1,data2);
-        return allPledges;
-    }*/
 }
