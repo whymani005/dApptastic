@@ -16,3 +16,7 @@ A dApp to help you become a more fantastic version of you!
 * `truffle test ./test/[fileName].js`. Will test all functions in that file
 * `truffle test`. Will run all tests
 * `npm run start`. Serves up UI on localhost:3000
+
+### Info <h2>
+If you have problems, delete `/build` any maybe `/node_modules` and re-run the steps above.\
+You can find the design wiki [here](https://github.com/whymani005/dApptastic/wiki/Design).
