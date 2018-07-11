@@ -1,18 +1,18 @@
 pragma solidity ^0.4.24;
 
 /*
-== pledgeIpfsHash ==
+TODO: Structs w sample data, to be saved in IPFS
+
+== PledgeInfo ==
 {
   "goalType": "WORKOUT",
   "status": "STARTED",
   "checkins": [1,2,3,7,8,16,18]
 }
-*/
 
-/*
-== userInfo ==
+== ProfileInfo ==
 {
-  "uPortAddress": "2opcbYK76MfUMxDroNCLMJeTMg4YBmwd6zq",
+  "uPortAddress": "2opc6YK76MfUMd8roNCLMJeTMg4Yrmwd6zq",
   "avatar": {
     "topType": "",
     "accessoriesType": "",
@@ -27,65 +27,77 @@ pragma solidity ^0.4.24;
 contract PledgeFactory {
     
     enum Goal {WORKOUT, CREATIVE_WORK, MEDITATE}
-    enum Status {STARTED, NOT_STARTED, SUCCESS, FAILED}
     enum RecipientType {DAPPTASTIC, OTHER_USER, RANDOM_USER}
     
-    uint constant minPrice = 0.01 ether;
-    uint32 constant totalPledgeLength = 30 days;
+    uint32 constant public totalPledgeLength = 14 days;
     
     address public owner;
+    uint public allTimePledgedCount;
     uint public allTimePledgedAmt;
-    address[] public newPledges;
+    
+    string[] public users; //used to iterate
+    mapping(string => string) uPortIdToProfileInfo;
+    mapping(string => address[]) userPledges;
+    
+    //address[] public newPledges;
     
     constructor() public {
         owner = msg.sender;
     }
 
-    function createPledge(address _recipient, uint _money) public payable {
-        //require(pledgeAmt >= totalPledgeLength*minPrice);
+    function createPledge(string _uportId, address _recipient, uint _totPledgedAmt) public payable returns (address) {
         //https://stackoverflow.com/questions/49851273/solidity-payable-constructor-from-contract
-        address newPledge = (new Pledge).value(msg.value)(msg.sender, _recipient, _money);
-        newPledges.push(newPledge);
+        address newPledge = (new Pledge).value(msg.value)(_uportId, msg.sender, _recipient, _totPledgedAmt);
+        users.push(_uportId);
+        userPledges[_uportId].push(newPledge);
         allTimePledgedAmt += msg.value; 
+        allTimePledgedCount++;
         
         //send any extra eth back
-    }
-
-    function getDeployedPledges() public view returns (address[]) {
-        return newPledges;
+        
+        return newPledge;
     }
 }
 
 
 /**
- * @title Pledge to hold goal info & pledged ether to be returned either to pledger or recipient
+ * @title Contract to hold single pledge info & pledged ether to be returned either to pledger or recipient
  * @dev The pledge can be controlled only by the pledger and can only send ether to the set recipient.
  */
 contract Pledge {
     
+    enum Status {STARTED, NOT_STARTED, SUCCESS, FAILED}
+    
+    //Pledger Identity
     address public pledger;
     string public pledgerUPortId;
+    
     address public recipient;
-    string public pledgeInfo;
+    //string public pledgeInfo;
     uint public creationDate;
     uint public value;
+    
+    Status public pledgeStatus;
+    PledgeFactory.Goal public goalType;
 
-    bool active;
-
-    modifier restricted(string _uPortId) { 
-        require (pledgerUPortId == _uPortId); 
+    /*modifier restricted(string _uPortId) { 
+        require (pledgerUPortId() == _uPortId); 
         _; 
-    }
+    }*/
     
-
-    
-    constructor(address _pledger , address _recipient, uint _money) public payable {
-        require(msg.value >= _money);
+    constructor(string _pledgerUportId, address _pledger, address _recipient, uint _totPledgedAmt) public payable {
+        require(msg.value >= _totPledgedAmt);
+        pledgerUPortId = _pledgerUportId;
         pledger = _pledger;
         recipient = _recipient;
         creationDate = now;
-        active = true;
         value = msg.value;
+        pledgeStatus = Status.STARTED;
     }
+    
+    /*function checkin() public {
+        require(pledgeStatus == Status.STARTED);
+       //todo 
+    }*/
 
 }
