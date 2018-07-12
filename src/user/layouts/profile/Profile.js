@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button, Grid, Segment } from 'semantic-ui-react';
-import Avatar from 'avataaars';
+import AvatarSelector from '../../../components/AvatarSelector';
 
 class Profile extends Component {
   constructor(props, { authData }) {
@@ -36,21 +35,7 @@ class Profile extends Component {
             </p>
             <h2>Create a cool avatar!</h2>
             <div>
-              <Card>
-                <Card.Content>
-                  <Card.Header>
-                    <div>
-                      <Avatar style={{width:'250px',height:'250px'}} avatarStyle='Circle' 
-                        topType={this.state.topType} accessoriesType={this.state.accessoriesType} 
-                        hairColor={this.state.hairColor} facialHairType={this.state.facialHairType} 
-                        clotheType={this.state.clotheType} clotheColor={this.state.clotheColor}
-                        eyeType={this.state.eyeType} eyebrowType={this.state.eyebrowType} 
-                        mouthType={this.state.mouthType} skinColor={this.state.skinColor}
-                      />
-                    </div>
-                  </Card.Header>
-                </Card.Content>
-              </Card>
+              <AvatarSelector />
             </div>
           </div>
         </div>

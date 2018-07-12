@@ -10,6 +10,7 @@ contract Pledge {
     address public uportUser; //uport MNID.decode'd address
     
     uint public creationDate;
+    uint8 public days;
     uint public value;
 
     modifier restricted(address _uPortId) { 

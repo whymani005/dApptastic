@@ -30,8 +30,7 @@ class App extends Component {
     this.state = {
       web3Network: 'Unknown',
       web3Accounts: [],
-      owner: '',
-      users: []
+      deployedBy: ''
     };
 
     this.getOwner = this.getOwner.bind(this);
@@ -42,14 +41,15 @@ class App extends Component {
     //const users = await this.pledgeFactoryInstance.getUsers();
     const accounts = await web3.eth.getAccounts();
     const networkId = this.getNetworkName(await web3.eth.net.getId());
-    const owner = await this.pledgeFactoryInstance.owner();
-    this.setState({ owner: owner, web3Accounts: accounts, web3Network: networkId});
+    const deployedBy = await this.pledgeFactoryInstance.deployedBy();
+    this.setState({ deployedBy: deployedBy, 
+          web3Accounts: accounts, web3Network: networkId});
   }
 
   async getOwner() {
-    const owner = await this.pledgeFactoryInstance.owner();
-    console.log('WONEERRR ehreeee: ',owner);
-    this.setState({ owner: owner });
+    const deployedBy = await this.pledgeFactoryInstance.deployedBy();
+    console.log('WONEERRR ehreeee: ',deployedBy);
+    this.setState({ deployedBy: deployedBy });
   }
 
   renderAccounts() {
@@ -70,7 +70,7 @@ class App extends Component {
       <Card fluid color='red'>
         <Card.Content>
           <Card.Header>
-            <div>Deployed by: {this.state.owner}</div>
+            <div>Deployed by: {this.state.deployedBy}</div>
             <br />
             <div>Current web3 Provider Info</div>
           </Card.Header>
@@ -81,9 +81,6 @@ class App extends Component {
     )
   }
 
-  
-
-
   render() {
     return (
       <Layout className="App">
@@ -92,7 +89,6 @@ class App extends Component {
         <div className="metamaskDiv">
           {this.renderProviderInfo()}
         </div>
-        <button onClick={this.getOwner}>Get Deployer Address!</button>
         <br />
         <div>
           {this.props.children}

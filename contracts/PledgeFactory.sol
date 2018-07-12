@@ -18,7 +18,9 @@ contract PledgeFactory {
 
     /*
         Used to save user's unique profile info
-        userUPortAddress -> IPFS_Hash(JSON formatted avatar info)
+        userUPortAddress -> IPFSHash(JSON formatted avatar info, 
+                                      stats[# of completed pledges, etc]
+                                    )
     */
     mapping(address => string) userProfileInfo;
 
