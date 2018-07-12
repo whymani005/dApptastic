@@ -29,7 +29,6 @@ class AvatarSelector extends Component {
   	}
 
   	generateRandomAvatar() {
-  		console.log('hellerrrr?');
 	    const topType=getRandomAttrVal('topType');
 	    const accessoriesType=getRandomAttrVal('accessoriesType');
 	    const hairColor=getRandomAttrVal('hairColor');
@@ -56,7 +55,6 @@ class AvatarSelector extends Component {
 
   	render() {
   		//onChange={this.onChange} <-- for dropdown!
-  		console.log(this.state);
   		return(
   			<Grid>
 			    <Grid.Column width={4}>

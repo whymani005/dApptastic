@@ -7,7 +7,7 @@ import Layout from './components/Layout';
 
 //Contracts
 import getContract from './util/getContract.js';
-import Adoption from "../build/contracts/Adoption.json";
+import PledgeFactory from "../build/contracts/PledgeFactory.json";
 
 
 class App extends Component {
@@ -30,24 +30,24 @@ class App extends Component {
     this.state = {
       web3Network: 'Unknown',
       web3Accounts: [],
-      adopters: [],
-      owner: ''
+      owner: '',
+      users: []
     };
 
     this.getOwner = this.getOwner.bind(this);
   }
 
   async componentDidMount() {
-    this.adoptionInstance = await getContract(Adoption);
-    const adopters = await this.adoptionInstance.getAdopters();
+    this.pledgeFactoryInstance = await getContract(PledgeFactory);
+    //const users = await this.pledgeFactoryInstance.getUsers();
     const accounts = await web3.eth.getAccounts();
     const networkId = this.getNetworkName(await web3.eth.net.getId());
-    const owner = await this.adoptionInstance.owner();
-    this.setState({ owner: owner, adopters: adopters, web3Accounts: accounts, web3Network: networkId});
+    const owner = await this.pledgeFactoryInstance.owner();
+    this.setState({ owner: owner, web3Accounts: accounts, web3Network: networkId});
   }
 
   async getOwner() {
-    const owner = await this.adoptionInstance.owner();
+    const owner = await this.pledgeFactoryInstance.owner();
     console.log('WONEERRR ehreeee: ',owner);
     this.setState({ owner: owner });
   }

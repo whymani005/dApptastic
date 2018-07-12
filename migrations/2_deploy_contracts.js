@@ -1,5 +1,5 @@
-var Adoption = artifacts.require("./Adoption.sol");
+var PledgeFactory = artifacts.require("./PledgeFactory.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Adoption);
+  deployer.deploy(PledgeFactory);
 };

@@ -1,6 +1,5 @@
 import { uport } from './../../../util/connectors.js';
 import { browserHistory } from 'react-router';
-import mnid, {decode} from 'mnid';
 
 export const USER_LOGGED_IN = 'USER_LOGGED_IN'
 function userLoggedIn(user) {
@@ -18,9 +17,6 @@ export function loginUser() {
       requested: ['name', 'country', 'address', 'networkAddress'],
       notifications: true // We want this if we want to recieve credentials
     }).then((credentials) => {
-      /*const decodedId = mnid.decode(credentials.address);
-      const specificNetworkAddress = decodedId.address;
-      console.log('helloooo -- ', specificNetworkAddress);*/
       dispatch(userLoggedIn(credentials))
 
       // Used a manual redirect here as opposed to a wrapper.
