@@ -34,13 +34,17 @@ contract PledgeFactory {
         deployedBy = msg.sender;
     }
 
-    function createPledge(address _uportAddress, uint _totPledgedAmt) public payable returns (address) {
+    function createPledge(address _uportAddress, uint _totPledgedAmt, bool firstPledge, string avatarInfo) public payable returns (address) {
         address newPledge = (new Pledge).value(msg.value)(_uportAddress, msg.sender, _totPledgedAmt);
         users.push(_uportAddress);
         userPledges[_uportAddress].push(newPledge);
         allTimePledgedAmt += msg.value; 
         allTimePledgedCount++;
-        
+
+        if(firstPledge) {
+            saveProfileInfo(_uportAddress, avatarInfo);
+        }
+
         //send any extra eth back
         
         return newPledge;

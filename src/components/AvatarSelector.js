@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Grid, Segment, Dropdown } from 'semantic-ui-react';
+import { Card, Grid, Dropdown } from 'semantic-ui-react';
 import Avatar from 'avataaars';
 
 import {facialHairColorOptions} from '../util/common.js';

@@ -48,5 +48,22 @@ const topTypeOptions = [
 	{key: 35, text: 'WinterHat4', value: 'WinterHat4' }
 ];
 
-export { facialHairColorOptions, topTypeOptions };
+
+const getAvatarDictFromStr = (attrStr) => {
+  var listS = attrStr.split('&');
+  var dict = [];
+  var i;
+  for(i=0; i<listS.length; i++) {
+  	var subL = listS[i].split('=');
+  	var key = subL[0];
+  	var value = subL[1];
+  	dict[key] = value;
+  }
+
+  return dict;
+};
+
+export default getAvatarDictFromStr;
+
+//export { facialHairColorOptions, topTypeOptions, getAvatarDictFromStr };
 

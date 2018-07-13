@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Card, Progress } from 'semantic-ui-react';
-import AvatarCard from '../../components/AvatarCard';
 var MNID = require('mnid');
 
 //Contracts
 import getContract from '../../util/getContract.js';
 import PledgeFactory from "../../../build/contracts/PledgeFactory.json";
+
+//Components
+import CreatePledge from '../../components/CreatePledge';;
 
 class Dashboard extends Component {
   constructor(props, { authData }) {
@@ -13,20 +15,18 @@ class Dashboard extends Component {
     authData = this.props;
 
     this.state = {
-      specificNetworkAddress: 'none',
+      userAddress: '',
       userPledges: [],
     };
-
   }
 
   async componentDidMount() {
     const specificNetworkAddress = this.getNetworkSpecificUserAddress(this.props.authData.address);
 
     this.pledgeFactoryInstance = await getContract(PledgeFactory);
-    const randObjet = await this.pledgeFactoryInstance.getPledgesForUser(specificNetworkAddress);
-    console.log('randObjet::: ',randObjet);
-
-    this.setState({ specificNetworkAddress: specificNetworkAddress});
+    const thisUserPledges = await this.pledgeFactoryInstance.getPledgesForUser(specificNetworkAddress);
+    console.log('thisUserPledges : ', thisUserPledges);
+    this.setState({ userAddress: specificNetworkAddress });
   }
 
   getNetworkSpecificUserAddress(mnidAddress) {
@@ -52,7 +52,7 @@ class Dashboard extends Component {
           </Card.Content>
         </Card>);
 
-    return items;
+    return <Card.Group items={items} />;
   }
 
   renderPreviousPledges() {
@@ -71,7 +71,7 @@ class Dashboard extends Component {
           </Card.Content>
           <Card.Content extra>
             <Card.Meta>Success Rate</Card.Meta>
-            <Progress fluid percent={perc[i]} progress indicating/>
+            <Progress fluid="true" percent={perc[i]} progress indicating/>
           </Card.Content>
         </Card>);
     }
@@ -79,22 +79,33 @@ class Dashboard extends Component {
     return items;
   }
 
+  createNewPledge() {
+    return(
+      <button onClick={this.createNewPledgeSol}>Create Pledge!</button>
+    );
+  }
+
+  
+
   render() {
     return(
       <div>
-        <p><strong>Congratulations {this.props.authData.name}</strong> from {this.props.authData.country}! You've logged in with UPort successfully.</p>
-        <p><strong>Your uPort MNID: {this.props.authData.address}</strong> </p>
-        <p><strong>Your address: {this.state.specificNetworkAddress}</strong> </p>
-
+        <p><strong>Welcome {this.props.authData.name}</strong> from {this.props.authData.country}!</p>
         <h1 style={{textAlign: 'center'}}>Dashboard</h1>
+
         <h2>Current Pledge</h2>
-        <Card.Group>
-          {this.renderCurrentPledges()}
-        </Card.Group>
+        { (this.state.userPledges.length < 1) ? 
+          <CreatePledge userAddress={this.state.userAddress}/> : 
+          this.renderCurrentPledges() 
+        }
+
+        <br/>
+
         <h2>Previous Pledges</h2>
         <Card.Group>
           {this.renderPreviousPledges()}
         </Card.Group>
+
       </div>
     )
   }

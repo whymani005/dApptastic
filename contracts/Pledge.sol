@@ -10,8 +10,12 @@ contract Pledge {
     address public uportUser; //uport MNID.decode'd address
     
     uint public creationDate;
-    uint8 public days;
     uint public value;
+
+    uint8 public numDays;
+    string public goalType;
+
+    bool public isActive;
 
     modifier restricted(address _uPortId) { 
         require (uportUser == _uPortId); 
@@ -22,8 +26,9 @@ contract Pledge {
         require(msg.value >= _totPledgedAmt);
         uportUser = _uportUser;
         fundedFrom = _fundedFrom;
-        creationDate = now;
         value = msg.value;
+        isActive = true;
+        creationDate = now;
     }
     
     /*function checkin() public {
