@@ -22,11 +22,12 @@ contract Pledge {
         _; 
     }
     
-    constructor(address _uportUser, address _fundedFrom, uint _totPledgedAmt) public payable {
+    constructor(address _uportUser, address _fundedFrom, uint _totPledgedAmt, string _goalType) public payable {
         require(msg.value >= _totPledgedAmt);
         uportUser = _uportUser;
         fundedFrom = _fundedFrom;
         value = msg.value;
+        goalType = _goalType;
         isActive = true;
         creationDate = now;
     }

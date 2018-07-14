@@ -16,8 +16,10 @@ class Dashboard extends Component {
 
     this.state = {
       userAddress: '',
-      userPledges: [],
+      userPledges: []
     };
+
+    this.createPledgeCallback = this.createPledgeCallback.bind(this);
   }
 
   async componentDidMount() {
@@ -26,7 +28,7 @@ class Dashboard extends Component {
     this.pledgeFactoryInstance = await getContract(PledgeFactory);
     const thisUserPledges = await this.pledgeFactoryInstance.getPledgesForUser(specificNetworkAddress);
     console.log('thisUserPledges : ', thisUserPledges);
-    this.setState({ userAddress: specificNetworkAddress });
+    this.setState({ userAddress: specificNetworkAddress, userPledges: thisUserPledges });
   }
 
   getNetworkSpecificUserAddress(mnidAddress) {
@@ -48,11 +50,16 @@ class Dashboard extends Component {
           </Card.Content>
           <Card.Content extra>
             <Card.Meta>Days Remaining</Card.Meta>
-            <Progress fluid percent={33} indicating />
+            <Progress fluid="true" percent={33} indicating />
           </Card.Content>
         </Card>);
 
-    return <Card.Group items={items} />;
+    return(
+      <Card.Group>
+        {items}
+      </Card.Group>
+    );
+
   }
 
   renderPreviousPledges() {
@@ -61,7 +68,7 @@ class Dashboard extends Component {
     const starts = ['04/23/2018', '03/01/2018', '11/30/2017'];
     const perc = [90, 43, 72];
     for(var i=0; i<names.length; i++) {
-      items.push(<Card>
+      items.push(<Card key={starts[i]}>
           <Card.Content>
             <Card.Header>{names[i]}</Card.Header>
             <Card.Meta>Started: {starts[i]}</Card.Meta>
@@ -79,10 +86,12 @@ class Dashboard extends Component {
     return items;
   }
 
-  createNewPledge() {
-    return(
-      <button onClick={this.createNewPledgeSol}>Create Pledge!</button>
-    );
+  async createPledgeCallback() {
+    console.log('I AM IN create CALLbacaaakkkk');
+
+    const thisUserPledges = await this.pledgeFactoryInstance.getPledgesForUser(this.state.userAddress);
+    console.log('CALLbacaaakkkk thisUserPledges : ', thisUserPledges);
+    this.setState({ userPledges: thisUserPledges });
   }
 
   
@@ -95,7 +104,7 @@ class Dashboard extends Component {
 
         <h2>Current Pledge</h2>
         { (this.state.userPledges.length < 1) ? 
-          <CreatePledge userAddress={this.state.userAddress}/> : 
+          <CreatePledge userAddress={this.state.userAddress} callbackMet={this.createPledgeCallback} firstEverPledge={(this.state.userPledges.length < 1)}/> : 
           this.renderCurrentPledges() 
         }
 

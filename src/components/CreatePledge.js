@@ -32,7 +32,7 @@ class CreatePledge extends Component {
 		const GOALS = ['Gym', 'Creative Work', 'Eat Clean'];
 		var items = [];
 		for(var i=0; i<GOALS.length; i++) {
-	      items.push(<Form.Field>
+	      items.push(<Form.Field key={GOALS[i]}>
 			          <Checkbox radio label={GOALS[i]}
 			            name='checkboxRadioGroup'
 			            value={GOALS[i]}
@@ -66,8 +66,12 @@ class CreatePledge extends Component {
 	
 
 	async createNewPledgeSol() {
-		const firstAvaInfo = this.generateFirstTimeRandAvatar();
-		const totPledgedAmt = 0.05; //in ETHER
+		var firstAvaInfo = '';
+		if(this.props.firstEverPledge) {
+ 			firstAvaInfo= this.generateFirstTimeRandAvatar();
+		}
+		
+		const totPledgedAmt = '0.05'; //in ETHER
 		console.log('RAND YOU: ', firstAvaInfo);
 		console.log('FOR USER: ', this.props.userAddress)
     	const accounts = await web3.eth.getAccounts();
@@ -77,14 +81,17 @@ class CreatePledge extends Component {
 		
 
     	const newPledge = await this.pledgeFactoryInstance.createPledge.sendTransaction(this.props.userAddress, 
-    														totPledgedAmt, 
-    														true, firstAvaInfo,
+    														totPledgedAmt, this.state.choosenGoal,
+    														this.props.firstEverPledge, firstAvaInfo,
     														{from: accounts[0], 
     															value: web3.utils.toWei(totPledgedAmt, 'ether'), 
     															gas:1100000
     														})
 
 		console.log('I CREATED A NEW PLEDGE txn: ', newPledge);
+
+		this.props.callbackMet();
+		console.log('--------done--------');
   	}
 
 

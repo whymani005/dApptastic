@@ -34,8 +34,7 @@ class Home extends Component {
 
   renderRandomPledges() {
     var items = [];
-    const names = ['TEST_Mike', 'TEST_Harvey', 'TEST_Rachel', 'TEST_Jessica', 
-                  'TEST_Donna', 'TEST_Loius', 'TEST_Norma'];
+    const names = ['TEST_Mike', 'TEST_Harvey', 'TEST_Loius', 'TEST_Jessica', 'TEST_Donna'];
     for(var i=0; i<names.length; i++) {
       items.push(<AvatarCard avaName={names[i]} key={names[i]}/>);
     }
@@ -50,7 +49,7 @@ class Home extends Component {
         <div className="pure-g">
           <div className="pure-u-1-1">
             <h2 style={{textAlign: 'center'}}>Current Pledges</h2>
-            <h4 style={{textAlign: 'center'}}>Total pledges: {this.state.totalPledgeCount} with total pledged amount: {this.state.totalPledgedAmt}</h4>
+            <h4 style={{textAlign: 'center'}}>Total pledges: {this.state.totalPledgeCount} with total pledged amount: {this.state.totalPledgedAmt} wei</h4>
           </div>
           <div>
             <Card.Group centered>

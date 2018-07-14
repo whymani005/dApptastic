@@ -34,8 +34,8 @@ contract PledgeFactory {
         deployedBy = msg.sender;
     }
 
-    function createPledge(address _uportAddress, uint _totPledgedAmt, bool firstPledge, string avatarInfo) public payable returns (address) {
-        address newPledge = (new Pledge).value(msg.value)(_uportAddress, msg.sender, _totPledgedAmt);
+    function createPledge(address _uportAddress, uint _totPledgedAmt, string _goalType, bool firstPledge, string avatarInfo) public payable returns (address) {
+        address newPledge = (new Pledge).value(msg.value)(_uportAddress, msg.sender, _totPledgedAmt, _goalType);
         users.push(_uportAddress);
         userPledges[_uportAddress].push(newPledge);
         allTimePledgedAmt += msg.value; 
