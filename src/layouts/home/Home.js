@@ -8,6 +8,7 @@ import PledgeFactory from "../../../build/contracts/PledgeFactory.json";
 import Pledge from "../../../build/contracts/Pledge.json";
 
 import web3 from '../../util/getWeb3.js';
+import getRandomAttrVal from '../../util/avataarHelper.js';
 
 class Home extends Component {
 
@@ -35,14 +36,15 @@ class Home extends Component {
     const allUsers = await this.pledgeFactoryInstance.getUsers();
     for(var i=0; i< allUsers.length; i++) {
       const userAddress = allUsers[i];
+      const userAvatar = await this.pledgeFactoryInstance.getProfileInfoForUser(userAddress);
       //TODO - get user avatar info!
       const userPledges = await this.pledgeFactoryInstance.getPledgesForUser(userAddress);
       for(var j=0; j<userPledges.length; j++) {
         const pledgeInstance = new web3.eth.Contract(Pledge.abi, userPledges[j]);
         //console.log('HOME - USRS - PLDGS --- INSTANCE: ', pledgeInstance);
         const tt = await pledgeInstance.methods.getSummary().call();
-        tt['uportUser'] = userAddress;
-        tt['avatarInfo'] = 'insert profile info';
+        tt['userAddress'] = userAddress;
+        tt['userAvatar'] = userAvatar;
         items.push(tt);
         console.log('HOME - USRS - PLDGS --- INSTANCE -- summaryyyyyy: ', tt);
       }
@@ -54,6 +56,18 @@ class Home extends Component {
                   });
   }
 
+  generateFirstTimeRandAvatar() {
+    var avatarStr = '';
+    const avaAttributes = ['topType','accessoriesType','hairColor','facialHairType','facialHairColor',
+                'clotheType','clotheColor','eyeType','eyebrowType','mouthType','skinColor'];
+
+    for(var i=0; i<avaAttributes.length; i++) {
+      var attr = avaAttributes[i]+'='+getRandomAttrVal(avaAttributes[i]);
+      avatarStr = ((avatarStr === '') ? attr : avatarStr+'&'+attr);
+    }
+    return avatarStr;
+  }
+
   renderPledges() {
     var items = [];
 
@@ -61,17 +75,19 @@ class Home extends Component {
     var realPledges = this.state.allPledges;
     for(var i=0; i<realPledges.length; i++) {
       const createTime = realPledges[i][0];
-      const name = realPledges[i][3];
-      const user = realPledges[i]['uportUser'];
-      items.push(<AvatarCard avaName={name} key={createTime} userAddress={user}/>);
+      const goalType = realPledges[i][3];
+      const userAddress = realPledges[i]['userAddress'].replace(/^(.{25}).+/, "$1…");
+      const userAvatar = realPledges[i]['userAvatar'];
+      items.push(<AvatarCard goalType={goalType} key={createTime} userAddress={userAddress} userAvatar={userAvatar}/>);
     }
 
     //JUST RANDOM
     const names = ['TEST_Mike', 'TEST_Harvey', 'TEST_Loius', 'TEST_Jessica', 'TEST_Donna'];
     for(var i=0; i<names.length; i++) {
-      items.push(<AvatarCard avaName={names[i]} key={names[i]} />);
+      const firstAvaInfo = this.generateFirstTimeRandAvatar();
+      items.push(<AvatarCard goalType={names[i]} key={names[i]} userAvatar={firstAvaInfo}/>);
     }
-    
+
     return items;
   }
 

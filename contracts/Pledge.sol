@@ -7,14 +7,6 @@ pragma solidity ^0.4.24;
 contract Pledge {
         
     address public fundedFrom; //metamask wallet address
-
-
-    //uport MNID.decode'd address
-    //actually we dont really need this, it doesn't help us in anyway.
-    //we already have a mapping from this to pledge in factory.
-    //TODO - REMOVE!
-    address public uportUser; 
-    
     uint public creationDate;
     uint public value;
 
@@ -28,12 +20,12 @@ contract Pledge {
         _; 
     }
     
-    constructor(address _uportUser, address _fundedFrom, uint _totPledgedAmt, string _goalType) public payable {
+    constructor(address _fundedFrom, uint _totPledgedAmt, string _goalType, uint8 _numDays) public payable {
         require(msg.value >= _totPledgedAmt);
-        uportUser = _uportUser;
         fundedFrom = _fundedFrom;
         value = msg.value;
         goalType = _goalType;
+        numDays = _numDays;
         isActive = true;
         creationDate = now;
     }

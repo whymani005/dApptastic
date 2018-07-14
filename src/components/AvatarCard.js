@@ -2,30 +2,31 @@ import React, { Component } from 'react';
 import { Card, Icon } from 'semantic-ui-react';
 import Avatar from 'avataaars';
 
-import getRandomAttrVal from '../util/avataarHelper.js';
+import getAvatarDictFromStr from '../util/common.js';
 
 
 class AvatarCard extends Component {
 
 	render() {
+		var items = getAvatarDictFromStr(this.props.userAvatar);
 		return(
 			<Card>
 		      <Card.Content>
 		        <Card.Header>
 		        	<div>
 						<Avatar style={{width:'250px',height:'250px'}} avatarStyle='Circle' 
-						  topType={getRandomAttrVal('topType')} accessoriesType={getRandomAttrVal('accessoriesType')} 
-						  hairColor={getRandomAttrVal('hairColor')} facialHairType={getRandomAttrVal('facialHairType')} 
-						  clotheType={getRandomAttrVal('clotheType')} clotheColor={getRandomAttrVal('clotheColor')}
-						  eyeType={getRandomAttrVal('eyeType')} eyebrowType={getRandomAttrVal('eyebrowType')} 
-						  mouthType={getRandomAttrVal('mouthType')} skinColor={getRandomAttrVal('skinColor')}
-						/>
+					        topType={items['topType']} accessoriesType={items['accessoriesType']} 
+					        hairColor={items['hairColor']} facialHairType={items['facialHairType']} 
+					        clotheType={items['clotheType']} clotheColor={items['clotheColor']}
+					        eyeType={items['eyeType']} eyebrowType={items['eyebrowType']} 
+					        mouthType={items['mouthType']} skinColor={items['skinColor']}
+				      	/>
 					</div>
 					<br />
-					<div>{this.props.avaName}</div>
+					<div>{this.props.goalType}</div>
 		        </Card.Header>
 		        <Card.Meta>
-		          <span>Goal: Eat clean</span>
+		          <span>Goal: {this.props.goalType}</span>
 		        </Card.Meta>
 		        <Card.Description>
 		          <p className='date'>5 days left in pledge</p>
