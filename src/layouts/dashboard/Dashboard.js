@@ -40,7 +40,7 @@ class Dashboard extends Component {
   renderCurrentPledges() {
     var items = [];
     items.push(
-        <Card>
+        <Card key={'aa'}>
           <Card.Content>
             <Card.Header>Goal: Eat Clean</Card.Header>
             <Card.Meta>Started: 07/11/2018</Card.Meta>
@@ -86,6 +86,7 @@ class Dashboard extends Component {
     return items;
   }
 
+  //https://stackoverflow.com/questions/33680315/react-need-to-call-parent-to-re-render-component
   async createPledgeCallback() {
     console.log('I AM IN create CALLbacaaakkkk');
 

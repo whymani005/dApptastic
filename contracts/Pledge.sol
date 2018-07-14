@@ -7,7 +7,13 @@ pragma solidity ^0.4.24;
 contract Pledge {
         
     address public fundedFrom; //metamask wallet address
-    address public uportUser; //uport MNID.decode'd address
+
+
+    //uport MNID.decode'd address
+    //actually we dont really need this, it doesn't help us in anyway.
+    //we already have a mapping from this to pledge in factory.
+    //TODO - REMOVE!
+    address public uportUser; 
     
     uint public creationDate;
     uint public value;
@@ -31,6 +37,11 @@ contract Pledge {
         isActive = true;
         creationDate = now;
     }
+
+    function getSummary() public view returns (uint, uint, uint8, string, bool) {
+        return (creationDate, value, numDays, goalType, isActive);
+    }
+
     
     /*function checkin() public {
         require(pledgeStatus == Status.STARTED);

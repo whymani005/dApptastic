@@ -33,7 +33,7 @@ class AvatarCard extends Component {
 		        </Card.Description>
 		      </Card.Content>
 		      <Card.Content extra>
-		        <a><Icon name='user' /> 0x7902d2bfsd8 </a>
+		        <a><Icon name='user' /> {this.props.userAddress} </a>
 		      </Card.Content>
 		    </Card>
 	  	)
