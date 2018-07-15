@@ -75,17 +75,23 @@ class Home extends Component {
     var realPledges = this.state.allPledges;
     for(var i=0; i<realPledges.length; i++) {
       const createTime = realPledges[i][0];
+      const totalPledgedAmt = realPledges[i][1];
+      const numDays = realPledges[i][2];
       const goalType = realPledges[i][3];
       const userAddress = realPledges[i]['userAddress'].replace(/^(.{25}).+/, "$1…");
       const userAvatar = realPledges[i]['userAvatar'];
-      items.push(<AvatarCard goalType={goalType} key={createTime} userAddress={userAddress} userAvatar={userAvatar}/>);
+      items.push(<AvatarCard goalType={goalType} key={createTime} 
+                  userAddress={userAddress} userAvatar={userAvatar} 
+                  createdAt={createTime} numDays={numDays} totalPledgedAmt={totalPledgedAmt}/>);
     }
 
     //JUST RANDOM
-    const names = ['TEST_Mike', 'TEST_Harvey', 'TEST_Loius', 'TEST_Jessica', 'TEST_Donna'];
+    const names = ['TEST_Harvey', 'TEST_Loius', 'TEST_Jessica', 'TEST_Donna'];
+    const totalPledgedAmt = 0;
     for(var i=0; i<names.length; i++) {
       const firstAvaInfo = this.generateFirstTimeRandAvatar();
-      items.push(<AvatarCard goalType={names[i]} key={names[i]} userAvatar={firstAvaInfo}/>);
+      items.push(<AvatarCard goalType={names[i]} key={names[i]} userAvatar={firstAvaInfo}
+                  totalPledgedAmt={totalPledgedAmt} />);
     }
 
     return items;
@@ -98,7 +104,7 @@ class Home extends Component {
         <div className="pure-g">
           <div className="pure-u-1-1">
             <h2 style={{textAlign: 'center'}}>Current Pledges</h2>
-            <h4 style={{textAlign: 'center'}}>Total pledges: {this.state.totalPledgeCount.toString()} with total pledged amount: {this.state.totalPledgedAmt.toString()} wei</h4>
+            <h4 style={{textAlign: 'center'}}>Total pledges: {this.state.totalPledgeCount.toString()} with total pledged amount: {web3.utils.fromWei(this.state.totalPledgedAmt.toString(), 'ether')} ETH</h4>
           </div>
           <br/>
           <div>

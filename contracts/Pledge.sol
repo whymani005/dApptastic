@@ -7,21 +7,25 @@ pragma solidity ^0.4.24;
 contract Pledge {
         
     address public fundedFrom; //metamask wallet address
+    address public uportUser; //uport MNID.decode'd address
+    
     uint public creationDate;
-    uint public value;
-
+    uint public value; // in Wei
     uint8 public numDays;
     string public goalType;
-
+    
     bool public isActive;
+
+    mapping(uint => bool) public checkins;
 
     modifier restricted(address _uPortId) { 
         require (uportUser == _uPortId); 
         _; 
     }
     
-    constructor(address _fundedFrom, uint _totPledgedAmt, string _goalType, uint8 _numDays) public payable {
+    constructor(address _uportUser, address _fundedFrom, uint _totPledgedAmt, string _goalType, uint8 _numDays) public payable {
         require(msg.value >= _totPledgedAmt);
+        uportUser = _uportUser;
         fundedFrom = _fundedFrom;
         value = msg.value;
         goalType = _goalType;
@@ -29,15 +33,14 @@ contract Pledge {
         isActive = true;
         creationDate = now;
     }
+    
+    function checkin(address _uPortId, uint _forDay) public restricted(_uPortId) {
+        require(isActive);
+        checkins[_forDay] = true;
+    }
 
     function getSummary() public view returns (uint, uint, uint8, string, bool) {
         return (creationDate, value, numDays, goalType, isActive);
     }
-
-    
-    /*function checkin() public {
-        require(pledgeStatus == Status.STARTED);
-       //todo 
-    }*/
 
 }

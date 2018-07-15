@@ -3,12 +3,17 @@ import { Card, Icon } from 'semantic-ui-react';
 import Avatar from 'avataaars';
 
 import getAvatarDictFromStr from '../util/common.js';
+import web3 from '../util/getWeb3.js';
 
 
 class AvatarCard extends Component {
 
 	render() {
 		var items = getAvatarDictFromStr(this.props.userAvatar);
+
+		var d = new Date(0);
+		d.setUTCSeconds(this.props.createdAt);
+
 		return(
 			<Card>
 		      <Card.Content>
@@ -26,11 +31,12 @@ class AvatarCard extends Component {
 					<div>{this.props.goalType}</div>
 		        </Card.Header>
 		        <Card.Meta>
-		          <span>Goal: {this.props.goalType}</span>
+		          <span>Created on: {d.toString()}</span>
 		        </Card.Meta>
 		        <Card.Description>
-		          <p className='date'>5 days left in pledge</p>
-		          <p className='date'>84% success</p>
+		        	<p><strong>Number of Days: </strong>{this.props.numDays}</p>
+		        	<p><strong>Total Pledged Amount: </strong>{web3.utils.fromWei(this.props.totalPledgedAmt.toString(), 'ether')} ETH</p>
+		          	<p className='date'>84% success</p>
 		        </Card.Description>
 		      </Card.Content>
 		      <Card.Content extra>
