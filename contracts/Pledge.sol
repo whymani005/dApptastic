@@ -39,6 +39,13 @@ contract Pledge {
         checkins[_forDay] = true;
     }
 
+    function finishPledge(address _uPortId) public restricted(_uPortId) {
+        require(isActive);
+        isActive = false;
+        //TODO - payout
+        //const payoutDays = numDays - checkins.length
+    }
+
     function getSummary() public view returns (uint, uint, uint8, string, bool) {
         return (creationDate, value, numDays, goalType, isActive);
     }

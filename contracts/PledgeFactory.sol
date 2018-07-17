@@ -39,13 +39,14 @@ contract PledgeFactory {
             bool firstPledge, string avatarInfo) public payable returns (address) {
 
         //TODO - check that there isn't an active pledge existing for this user
+        
+        if(bytes(userProfileInfo[_uportAddress]).length == 0) {
+            users.push(_uportAddress);
+        }
 
         address newPledge = (new Pledge).value(msg.value)(_uportAddress, msg.sender, 
                                         _totPledgedAmt, _goalType, _numDays);
         
-        //TODO - add only if user doesn't already exist
-        users.push(_uportAddress);
-
         userPledges[_uportAddress].push(newPledge);
         allTimePledgedAmt += msg.value; 
         allTimePledgedCount++;
@@ -56,7 +57,7 @@ contract PledgeFactory {
 
         //send any extra eth back
         
-        return newPledge;
+        return newPledge; //return txn address
     }
     
     function getUsers() public view returns (address[]) {
