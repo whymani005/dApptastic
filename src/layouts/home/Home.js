@@ -8,7 +8,7 @@ import PledgeFactory from "../../../build/contracts/PledgeFactory.json";
 import Pledge from "../../../build/contracts/Pledge.json";
 
 import web3 from '../../util/getWeb3.js';
-import { setJSON, getJSON } from '../../util/ipfs.js'
+import { getJSON } from '../../util/ipfs.js'
 import getRandomAttrVal from '../../util/avataarHelper.js';
 
 
@@ -24,7 +24,7 @@ class Home extends Component {
       isLoading: true
     };
 
-    this.fetchData = this.fetchData.bind(this);
+    this.fetchAllPledges = this.fetchAllPledges.bind(this);
   }
 
   async componentDidMount() {
@@ -35,7 +35,7 @@ class Home extends Component {
     const totalPledgedAmt = await this.pledgeFactoryInstance.allTimePledgedAmt();
 
     //Get All Pledges
-    const items = await this.fetchData();
+    const items = await this.fetchAllPledges();
 
     this.setState({ totalPledgeCount: totalPledgeCount, 
                     totalPledgedAmt: totalPledgedAmt,
@@ -43,13 +43,12 @@ class Home extends Component {
                   });
   }
 
-  fetchData = async () => {
-    //Get All Pledges
+  fetchAllPledges = async () => {
     var items = [];
     const allUsers = await this.pledgeFactoryInstance.getUsers();
 
-    for(var i=0; i<allUsers.length; i++) {
-      const userAddress = allUsers[i];
+    for(var a=0; a<allUsers.length; a++) {
+      const userAddress = allUsers[a];
       const userAvatarHash = await this.pledgeFactoryInstance.getProfileInfoForUser(userAddress);
       const userDetails = await getJSON(userAvatarHash);
 
@@ -88,9 +87,9 @@ class Home extends Component {
     //JUST RANDOM
     const names = ['TEST_Harvey', 'TEST_Loius', 'TEST_Jessica', 'TEST_Donna'];
     const totalPledgedAmt = 0;
-    for(var i=0; i<names.length; i++) {
+    for(var a=0; a<names.length; a++) {
       const firstAvaInfo = this.generateFirstTimeRandAvatar();
-      items.push(<AvatarCard goalType={names[i]} key={names[i]} userAvatar={firstAvaInfo}
+      items.push(<AvatarCard goalType={names[a]} key={names[a]} userAvatar={firstAvaInfo}
                   totalPledgedAmt={totalPledgedAmt} />);
     }
 
@@ -100,7 +99,6 @@ class Home extends Component {
       </Card.Group>
     );
   }
-
 
   render() {
     return(
@@ -130,7 +128,7 @@ class Home extends Component {
 
 
   //----------------------------------
-  /// ====== TEMP HELPER ======
+  /// ====== HELPER ======
   //----------------------------------
 
   generateFirstTimeRandAvatar() {

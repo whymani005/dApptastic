@@ -7,7 +7,7 @@ import getContract from '../util/getContract.js';
 import PledgeFactory from "../../build/contracts/PledgeFactory.json";
 
 import web3 from '../util/getWeb3.js';
-import { setJSON, getJSON } from '../util/ipfs.js'
+import { setJSON } from '../util/ipfs.js'
 
 const options = [
 	  { key: '14', text: '14 Days', value: '14' },
@@ -59,7 +59,7 @@ class CreatePledge extends Component {
  			firstAvaInfo = this.generateFirstTimeRandAvatar();
 		}
 
-		this.setState({ stepStatus: 'Saving avatar to IPFS. This will take a minute...' });
+		this.setState({ stepStatus: 'Saving info to IPFS. This will take a minute...' });
 		const hash = await setJSON({ userAvatar: firstAvaInfo });
 		const ipfsRet = 'Avatar saved at: ' + hash + '. Review/Submit txn details on Metamask to finalize.'; 
 		this.setState({ stepStatus: ipfsRet });
