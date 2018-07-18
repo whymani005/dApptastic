@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Avatar from 'avataaars';
-import AvatarSelector from '../../../components/AvatarSelector';
+//import AvatarSelector from '../../../components/AvatarSelector';
 var MNID = require('mnid');
 
 //Contracts
@@ -8,6 +8,7 @@ import getContract from '../../../util/getContract.js';
 import PledgeFactory from "../../../../build/contracts/PledgeFactory.json";
 
 import getAvatarDictFromStr from '../../../util/common.js';
+import { getJSON } from '../../../util/ipfs.js'
 
 
 class Profile extends Component {
@@ -18,7 +19,7 @@ class Profile extends Component {
     this.state = {
       specificNetworkAddress: 'none',
       totalNumPledges: 0,
-      avatarDesc: ''
+      userAvatar: ''
     };
   }
 
@@ -26,10 +27,14 @@ class Profile extends Component {
     const specificNetworkAddress = this.getNetworkSpecificUserAddress(this.props.authData.address);
     this.pledgeFactoryInstance = await getContract(PledgeFactory);
     const thisUserPledges = await this.pledgeFactoryInstance.getPledgesForUser(specificNetworkAddress);
-    const thisUserAvatar = await this.pledgeFactoryInstance.getProfileInfoForUser(specificNetworkAddress);
+
+    const userAvatarHash = await this.pledgeFactoryInstance.getProfileInfoForUser(specificNetworkAddress);
+    const userDetails = await getJSON(userAvatarHash);
+    const userAvatar = userDetails['userAvatar'];
+
     this.setState({ specificNetworkAddress: specificNetworkAddress, 
-      totalNumPledges: thisUserPledges.length.toString(),
-      avatarDesc: thisUserAvatar});
+                    totalNumPledges: thisUserPledges.length.toString(),
+                    userAvatar: userAvatar});
   }
 
   getNetworkSpecificUserAddress(mnidAddress) {
@@ -39,7 +44,7 @@ class Profile extends Component {
   }
 
   renderUserAvatar() {
-    var items = getAvatarDictFromStr(this.state.avatarDesc);
+    var items = getAvatarDictFromStr(this.state.userAvatar);
     return(
       <Avatar style={{width:'250px',height:'250px'}} avatarStyle='Circle' 
         topType={items['topType']} accessoriesType={items['accessoriesType']} 
@@ -75,7 +80,7 @@ class Profile extends Component {
             </p>
             <div>
               <strong>Your Avatar</strong><br />
-              { (this.state.avatarDesc !== '') ? 
+              { (this.state.userAvatar !== '') ? 
                   this.renderUserAvatar() : 
                   <p>A default avatar will be created when you create your first pledge.<br/>
                   Options to customize your avatar appear the more checkins/pledges you finish.<br/><br/>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Checkbox } from 'semantic-ui-react'
+import { Form, Input, Select, Button, Message } from 'semantic-ui-react'
 import getRandomAttrVal from '../util/avataarHelper.js';
 
 //Contracts
@@ -8,6 +8,12 @@ import PledgeFactory from "../../build/contracts/PledgeFactory.json";
 
 import web3 from '../util/getWeb3.js';
 import { setJSON, getJSON } from '../util/ipfs.js'
+
+const options = [
+	  { key: '14', text: '14 Days', value: '14' },
+	  { key: '30', text: '30 Days', value: '30' },
+	  { key: '45', text: '45 Days', value: '45' }
+	]
 
 
 class CreatePledge extends Component {
@@ -44,8 +50,10 @@ class CreatePledge extends Component {
 		return avatarStr;
 	}
 
-	async createNewPledgeSol() {
+	createNewPledgeSol = async (event) => {
+		event.preventDefault();
 		this.setState({ loading: true, stepStatus: 'Generating avatar' });
+
 		var firstAvaInfo = '';
 		if(this.props.firstEverPledge) {
  			firstAvaInfo = this.generateFirstTimeRandAvatar();
@@ -53,19 +61,18 @@ class CreatePledge extends Component {
 
 		this.setState({ stepStatus: 'Saving avatar to IPFS. This will take a minute...' });
 		const hash = await setJSON({ userAvatar: firstAvaInfo });
-		console.log('CreatePledge.js - Got IPFS hash for avatar: ', hash);
-		
+		const ipfsRet = 'Avatar saved at: ' + hash + '. Review/Submit txn details on Metamask to finalize.'; 
+		this.setState({ stepStatus: ipfsRet });
+
 		const totPledgedAmt = '0.05'; //in ETHER
 		const numDays = 30;
 		console.log('RAND YOU: ', firstAvaInfo);
 		console.log('FOR USER: ', this.props.userAddress)
     	const accounts = await web3.eth.getAccounts();
 
-		this.setState({ stepStatus: 'Avatar saved! Review/Submit txn details on Metamask to finalize pledge...' });
-        console.log('CreatePledge.js - Before createPledge with avatar hash loc: ', firstAvaInfo);
     	const newPledge = await this.pledgeFactoryInstance.createPledge.sendTransaction(this.props.userAddress, 
     														totPledgedAmt, this.state.choosenGoal, numDays,
-    														this.props.firstEverPledge, firstAvaInfo,
+    														this.props.firstEverPledge, hash,
     														{from: accounts[0], 
     															value: web3.utils.toWei(totPledgedAmt, 'ether'), 
     															gas:1100000
@@ -96,21 +103,32 @@ class CreatePledge extends Component {
 		);
 	}
 
+	
 	renderCreatePledgeForm() {
 		return(
 			<React.Fragment>
-				<p>You have no current pledges, fill the info below to get started!</p>
-				<p>
-	              <strong>Choose a GOAL</strong><br />
-	            </p>
-	            {this.renderGoalsList()}
-	            <br/>
-	            <button onClick={this.createNewPledgeSol}>Create Pledge!</button>
+				<p>You've got none. Let's create one!</p>
+				<Form onSubmit={this.createNewPledgeSol}>
+			        <Form.Group >
+			          <Form.Field width={10} control={Input} 
+			          				value={this.state.choosenGoal} 
+			          				onChange={event => this.setState({ choosenGoal: event.target.value })} 
+			          				label='Name your new habit' placeholder='New Habit...' 
+          				/>
+			          <Form.Field width={4} control={Select} label='How many days are you committing to?' options={options} placeholder='Length' />
+			          <Form.Field width={2} control={Input} label='ETH per day' placeholder='Amt' />
+			        </Form.Group>
+			        <Message fluid="true" header='Summary'
+					      list={[ 'Habit Name: ', 'For 30 days', 
+					      'At 0.0001 ETH per day', 'Totalling 0.003 ETH currently valued at ~$50 USD' ]}
+				  	/>
+			        <Form.Field control={Button}>Submit</Form.Field>
+			    </Form>
 			</React.Fragment>
 		);
 	}
 
-	renderGoalsList() {
+	/*renderGoalsList() {
 		const GOALS = ['Gym', 'Creative Work', 'Eat Clean'];
 		var items = [];
 		for(var i=0; i<GOALS.length; i++) {
@@ -132,7 +150,7 @@ class CreatePledge extends Component {
 	    	{items}
 	    	</Form>
     	);
-	}
+	}*/
 
 }
 

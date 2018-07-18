@@ -8,7 +8,9 @@ import PledgeFactory from "../../../build/contracts/PledgeFactory.json";
 import Pledge from "../../../build/contracts/Pledge.json";
 
 import web3 from '../../util/getWeb3.js';
+import { setJSON, getJSON } from '../../util/ipfs.js'
 import getRandomAttrVal from '../../util/avataarHelper.js';
+
 
 class Home extends Component {
 
@@ -18,10 +20,11 @@ class Home extends Component {
     this.state = {
       totalPledgeCount: 0,
       totalPledgedAmt: 0,
-      allPledges: []
+      allPledges: [],
+      isLoading: true
     };
 
-    //this.getAllPledges = this.getAllPledges.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
   async componentDidMount() {
@@ -32,40 +35,36 @@ class Home extends Component {
     const totalPledgedAmt = await this.pledgeFactoryInstance.allTimePledgedAmt();
 
     //Get All Pledges
+    const items = await this.fetchData();
+
+    this.setState({ totalPledgeCount: totalPledgeCount, 
+                    totalPledgedAmt: totalPledgedAmt,
+                    allPledges: items, isLoading: false
+                  });
+  }
+
+  fetchData = async () => {
+    //Get All Pledges
     var items = [];
     const allUsers = await this.pledgeFactoryInstance.getUsers();
-    for(var i=0; i< allUsers.length; i++) {
+
+    for(var i=0; i<allUsers.length; i++) {
       const userAddress = allUsers[i];
-      const userAvatar = await this.pledgeFactoryInstance.getProfileInfoForUser(userAddress);
-      //TODO - get user avatar info!
+      const userAvatarHash = await this.pledgeFactoryInstance.getProfileInfoForUser(userAddress);
+      const userDetails = await getJSON(userAvatarHash);
+
       const userPledges = await this.pledgeFactoryInstance.getPledgesForUser(userAddress);
       for(var j=0; j<userPledges.length; j++) {
         const pledgeInstance = new web3.eth.Contract(Pledge.abi, userPledges[j]);
         //console.log('HOME - USRS - PLDGS --- INSTANCE: ', pledgeInstance);
         const tt = await pledgeInstance.methods.getSummary().call();
         tt['userAddress'] = userAddress;
-        tt['userAvatar'] = userAvatar;
+        tt['userDetails'] = userDetails;
         items.push(tt);
-        console.log('HOME - USRS - PLDGS --- INSTANCE -- summaryyyyyy: ', tt);
+        //console.log('HOME - USRS - PLDGS --- INSTANCE -- summaryyyyyy: ', tt);
       }
     }
-
-    this.setState({ totalPledgeCount: totalPledgeCount, 
-                    totalPledgedAmt: totalPledgedAmt,
-                    allPledges: items
-                  });
-  }
-
-  generateFirstTimeRandAvatar() {
-    var avatarStr = '';
-    const avaAttributes = ['topType','accessoriesType','hairColor','facialHairType','facialHairColor',
-                'clotheType','clotheColor','eyeType','eyebrowType','mouthType','skinColor'];
-
-    for(var i=0; i<avaAttributes.length; i++) {
-      var attr = avaAttributes[i]+'='+getRandomAttrVal(avaAttributes[i]);
-      avatarStr = ((avatarStr === '') ? attr : avatarStr+'&'+attr);
-    }
-    return avatarStr;
+    return items;
   }
 
   renderPledges() {
@@ -79,9 +78,10 @@ class Home extends Component {
       const numDays = realPledges[i][2];
       const goalType = realPledges[i][3];
       const userAddress = realPledges[i]['userAddress'].replace(/^(.{25}).+/, "$1…");
-      const userAvatar = realPledges[i]['userAvatar'];
+      const userAvatarDetails = realPledges[i]['userDetails']['userAvatar'];
+
       items.push(<AvatarCard goalType={goalType} key={createTime} 
-                  userAddress={userAddress} userAvatar={userAvatar} 
+                  userAddress={userAddress} userAvatar={userAvatarDetails} 
                   createdAt={createTime} numDays={numDays} totalPledgedAmt={totalPledgedAmt}/>);
     }
 
@@ -94,7 +94,11 @@ class Home extends Component {
                   totalPledgedAmt={totalPledgedAmt} />);
     }
 
-    return items;
+    return (
+      <Card.Group centered>
+        {items}
+      </Card.Group>
+    );
   }
 
 
@@ -108,14 +112,39 @@ class Home extends Component {
           </div>
           <br/>
           <div>
-            <Card.Group centered>
-              {this.renderPledges()}
-            </Card.Group>
+            { this.state.isLoading ? this.renderLoading() : this.renderPledges() }
           </div>
         </div>
       </main>
-    )
+    );
   }
+
+  renderLoading() {
+    return(
+      <React.Fragment>
+        <p>Fetching all pledges on this platform from blockchain/IPFS.</p>
+        <p>Lots of talking going on. <strong>Hang on, this may take a minute...</strong></p>
+      </React.Fragment>
+    );
+  }
+
+
+  //----------------------------------
+  /// ====== TEMP HELPER ======
+  //----------------------------------
+
+  generateFirstTimeRandAvatar() {
+    var avatarStr = '';
+    const avaAttributes = ['topType','accessoriesType','hairColor','facialHairType','facialHairColor',
+                'clotheType','clotheColor','eyeType','eyebrowType','mouthType','skinColor'];
+
+    for(var i=0; i<avaAttributes.length; i++) {
+      var attr = avaAttributes[i]+'='+getRandomAttrVal(avaAttributes[i]);
+      avatarStr = ((avatarStr === '') ? attr : avatarStr+'&'+attr);
+    }
+    return avatarStr;
+  }
+
 }
 
 module.exports = Home;
