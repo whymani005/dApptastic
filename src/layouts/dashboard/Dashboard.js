@@ -70,7 +70,7 @@ class Dashboard extends Component {
       items.push(
         <Card key={createdAt.toString()}>
           <Card.Content>
-            <Card.Header>{goalType}</Card.Header>
+            <Card.Header>Goal: {goalType}</Card.Header>
             <Card.Meta>Started On: {createdAt.toString()}</Card.Meta>
             <Card.Description>
               <strong>Number of Days: </strong>{numDays}<br/>

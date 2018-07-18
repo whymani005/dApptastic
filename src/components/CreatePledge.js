@@ -18,7 +18,7 @@ const options = [
 
 class CreatePledge extends Component {
 
-	handleGoalSelection = (e, { value }) => this.setState({ choosenGoal: value })
+	handleNumDaysSelection = (e, { value }) => this.setState({ numDays: value })
 
 	constructor(props) {
 	    super(props);
@@ -65,9 +65,7 @@ class CreatePledge extends Component {
 		this.setState({ stepStatus: ipfsRet });
 
 		const totPledgedAmt = '0.05'; //in ETHER
-		const numDays = 30;
-		console.log('RAND YOU: ', firstAvaInfo);
-		console.log('FOR USER: ', this.props.userAddress)
+		const numDays = this.state.numDays.trim();
     	const accounts = await web3.eth.getAccounts();
 
     	const newPledge = await this.pledgeFactoryInstance.createPledge.sendTransaction(this.props.userAddress, 
@@ -98,7 +96,7 @@ class CreatePledge extends Component {
 		return(
 			<React.Fragment>
 				<p>CREATING PLEDGE ... (this may take some time)</p>
-				<p>Status: {this.state.stepStatus}</p>
+				<p><strong>Status:</strong> {this.state.stepStatus}</p>
 			</React.Fragment>
 		);
 	}
@@ -115,7 +113,10 @@ class CreatePledge extends Component {
 			          				onChange={event => this.setState({ choosenGoal: event.target.value })} 
 			          				label='Name your new habit' placeholder='New Habit...' 
           				/>
-			          <Form.Field width={4} control={Select} label='How many days are you committing to?' options={options} placeholder='Length' />
+			          <Form.Field width={4} control={Select} value={this.state.numDays} 
+			          			onChange={this.handleNumDaysSelection}
+			          			label='How many days are you committing to?' 
+			          			options={options} placeholder='Length' />
 			          <Form.Field width={2} control={Input} label='ETH per day' placeholder='Amt' />
 			        </Form.Group>
 			        <Message fluid="true" header='Summary'
@@ -127,30 +128,6 @@ class CreatePledge extends Component {
 			</React.Fragment>
 		);
 	}
-
-	/*renderGoalsList() {
-		const GOALS = ['Gym', 'Creative Work', 'Eat Clean'];
-		var items = [];
-		for(var i=0; i<GOALS.length; i++) {
-	      items.push(<Form.Field key={GOALS[i]}>
-			          <Checkbox radio label={GOALS[i]}
-			            name='checkboxRadioGroup'
-			            value={GOALS[i]}
-			            checked={this.state.value === GOALS[i]}
-			            onChange={this.handleGoalSelection}
-			          />
-			        </Form.Field>);
-	    }
-
-	    return(
-	    	<Form>
-	    	<Form.Field>
-	          Selected value: <b>{this.state.choosenGoal}</b>
-	        </Form.Field>
-	    	{items}
-	    	</Form>
-    	);
-	}*/
 
 }
 
