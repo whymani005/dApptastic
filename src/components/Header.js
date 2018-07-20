@@ -19,7 +19,9 @@ class Header extends Component {
 				<Menu.Item>
 					<Link to="/profile"> Profile </Link>
 				</Menu.Item>
-				<LogoutButtonContainer />
+				<Menu.Item>
+					<LogoutButtonContainer />
+				</Menu.Item>
 			</Menu.Menu>
 
 		));
@@ -33,7 +35,7 @@ class Header extends Component {
 		return (
 			<Menu style={{ marginTop: "10px" }}>
 				<Menu.Item>
-					<Link to="/">dApptastic</Link>
+					<Link to="/">Home</Link>
 				</Menu.Item>
 				<Menu.Menu position="right">
 					<Menu.Item> <OnlyGuestLinks /> </Menu.Item>

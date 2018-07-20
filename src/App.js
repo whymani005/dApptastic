@@ -6,8 +6,8 @@ import web3 from './util/getWeb3.js';
 import Header from './components/Header';
 
 //Contracts
-import getContract from './util/getContract.js';
-import PledgeFactory from "../build/contracts/PledgeFactory.json";
+//import getContract from './util/getContract.js';
+//import PledgeFactory from "../build/contracts/PledgeFactory.json";
 
 
 class App extends Component {
@@ -15,12 +15,12 @@ class App extends Component {
   //https://web3js.readthedocs.io/en/1.0/web3-eth-net.html
   getNetworkName(netId) {
     switch (netId) {
-      case "1": return 'Mainnet';
-      case "2": return 'Morden';
-      case "3": return 'Ropsten';
-      case "4": return 'Rinkeby';
-      case "42": return 'Kovan';
-      default: return 'Unknown/Private';
+      case "main": return 'Mainnet';
+      case "private": return 'Private';
+      case "ropsten": return 'Ropsten';
+      case "rinkeby": return 'Rinkeby';
+      case "kovan": return 'Kovan';
+      default: return 'Unknown';
     }
   }
 
@@ -33,45 +33,21 @@ class App extends Component {
       deployedBy: ''
     };
 
-    this.getOwner = this.getOwner.bind(this);
   }
 
   async componentDidMount() {
-    this.pledgeFactoryInstance = await getContract(PledgeFactory);
-    //const users = await this.pledgeFactoryInstance.getUsers();
+    const networkId = this.getNetworkName(await web3.eth.net.getNetworkType());
     const accounts = await web3.eth.getAccounts();
-    const networkId = this.getNetworkName(await web3.eth.net.getId());
-    const deployedBy = await this.pledgeFactoryInstance.deployedBy();
-    this.setState({ deployedBy: deployedBy, 
-          web3Accounts: accounts, web3Network: networkId});
-  }
 
-  async getOwner() {
-    const deployedBy = await this.pledgeFactoryInstance.deployedBy();
-    this.setState({ deployedBy: deployedBy });
+    /*this.pledgeFactoryInstance = await getContract(PledgeFactory);
+    const deployedBy = await this.pledgeFactoryInstance.deployedBy();*/
+    this.setState({ web3Accounts: accounts, web3Network: networkId});
   }
-
-  /*renderAccounts() {
-    var allAccts = this.state.web3Accounts;
-    return (
-      <ul>
-        {allAccts.map(function(acct) {
-          return (
-            <li key={acct}>{acct}</li>
-          )
-        })}
-      </ul>
-    )
-  }*/
 
   renderProviderInfo() {
     return (
       <Message info>
-        <Message.Header>Application Info</Message.Header>
-        <p>dApp deployed by: {this.state.deployedBy}</p>
-        <p>You're connected to: <strong>{this.state.web3Network} network</strong></p>
-        <p>Current Metamask Account: <strong>{this.state.web3Accounts[0]}</strong></p>
-        <p></p>
+        <p style={{textAlign: 'center'}}>Connected to <strong>{this.state.web3Network}</strong> network using Metamask account <strong>{this.state.web3Accounts[0]}</strong></p>
       </Message>
     )
   }
@@ -83,16 +59,12 @@ class App extends Component {
         
         <div>
           {this.renderProviderInfo()}
-          <br />
         </div>
 
         <Container>
-          <h3 style={{textAlign: 'center'}}>A dApp to help you be a more fantastic version of you!</h3>
           <Header />
           <br />
-          <div>
-            {this.props.children}
-          </div>
+          {this.props.children}
         </Container>
 
         <div>

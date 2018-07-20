@@ -86,7 +86,7 @@ class Home extends Component {
     }
 
     //JUST RANDOM
-    const names = ['TEST_Harvey', 'TEST_Loius', 'TEST_Donna'];
+    const names = ['Explore a new street_TEST', 'Listen to a new song_TEST'];
     const totalPledgedAmt = 0;
     for(var a=0; a<names.length; a++) {
       const firstAvaInfo = this.generateFirstTimeRandAvatar();
@@ -120,7 +120,7 @@ class Home extends Component {
 
   renderInfoStats() {
     return(
-      <Statistic.Group widths='three'>
+      <Statistic.Group size='tiny' widths='three'>
         <Statistic>
           <Statistic.Value>{this.state.totalPledgeCount.toString()}</Statistic.Value>
           <Statistic.Label>Pledges</Statistic.Label>

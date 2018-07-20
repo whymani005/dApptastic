@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Grid } from 'semantic-ui-react';
 import Avatar from 'avataaars';
 //import AvatarSelector from '../../../components/AvatarSelector';
 var MNID = require('mnid');
@@ -59,32 +60,46 @@ class Profile extends Component {
   render() {
     return(
       <React.Fragment>
-        <p>
-          <strong>Name</strong><br />
-          {this.props.authData.name}
-        </p>
-        <p>
-          <strong>Multi Network ID</strong><br />
-          {this.props.authData.address}
-        </p>
-        <p>
-          <strong>Network Specific Address</strong><br />
-          {this.state.specificNetworkAddress}
-        </p>
-        <p>
-          <strong>Total Pledges</strong><br />
-          {this.state.totalNumPledges}
-        </p>
-        <div>
-          <strong>Your Avatar</strong><br />
-          { (this.state.userAvatar !== '') ? 
-              this.renderUserAvatar() : 
-              <p>A default avatar will be created when you create your first pledge.<br/>
-              Options to customize your avatar appear the more checkins/pledges you finish.<br/><br/>
-              <strong>Go to your Dashboard now to get started!!</strong>
-              </p> 
-          }
-        </div>
+
+        <Grid>
+        
+          <Grid.Column width={4}>
+            <strong>Your Avatar</strong><br />
+            { (this.state.userAvatar !== '') ? 
+                this.renderUserAvatar() : 
+                <p>A default avatar will be created when you create your first pledge.<br/>
+                Options to customize your avatar appear the more checkins/pledges you finish.<br/><br/>
+                <strong>Go to your Dashboard now to get started!!</strong>
+                </p> 
+            }
+            <div>
+              <br/>
+              <Button fluid>Edit Avatar</Button>
+            </div>
+          </Grid.Column>
+
+          <Grid.Column width={9}>
+            <br/><br/><br/>
+            <p>
+              <strong>Name</strong><br />
+              {this.props.authData.name}
+            </p>
+            <p>
+              <strong>Multi Network ID</strong><br />
+              {this.props.authData.address}
+            </p>
+            <p>
+              <strong>Network Specific Address</strong><br />
+              {this.state.specificNetworkAddress}
+            </p>
+            <p>
+              <strong>Total Pledges</strong><br />
+              {this.state.totalNumPledges}
+            </p>
+          </Grid.Column>
+
+        </Grid>
+
       </React.Fragment>
     );
   }
