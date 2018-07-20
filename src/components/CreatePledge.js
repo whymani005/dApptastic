@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Select, Button, Message } from 'semantic-ui-react'
+import { Form, Input, Select, Button, Message, Icon } from 'semantic-ui-react'
 import getRandomAttrVal from '../util/avataarHelper.js';
 
 //Contracts
@@ -61,7 +61,7 @@ class CreatePledge extends Component {
 
 		this.setState({ stepStatus: 'Saving info to IPFS. This will take a minute...' });
 		const hash = await setJSON({ userAvatar: firstAvaInfo });
-		const ipfsRet = 'Avatar saved at: ' + hash + '. Review/Submit txn details on Metamask to finalize.'; 
+		const ipfsRet = 'Avatar saved at IPFS: ' + hash + '. Review/Submit txn details on Metamask to finalize.'; 
 		this.setState({ stepStatus: ipfsRet });
 
 		const totPledgedAmt = '0.05'; //in ETHER
@@ -94,10 +94,13 @@ class CreatePledge extends Component {
 
 	renderLoading() {
 		return(
-			<React.Fragment>
-				<p>CREATING PLEDGE ... (this may take some time)</p>
-				<p><strong>Status:</strong> {this.state.stepStatus}</p>
-			</React.Fragment>
+			<Message icon>
+			    <Icon name='circle notched' loading />
+			    <Message.Content>
+			      <Message.Header>Creating Pledge ... (this may take some time)</Message.Header>
+			      <strong>Status:</strong> {this.state.stepStatus}
+			    </Message.Content>
+		  	</Message>
 		);
 	}
 
@@ -119,10 +122,15 @@ class CreatePledge extends Component {
 			          			options={options} placeholder='Length' />
 			          <Form.Field width={2} control={Input} label='ETH per day' placeholder='Amt' />
 			        </Form.Group>
-			        <Message fluid="true" header='Summary'
-					      list={[ 'Habit Name: ', 'For 30 days', 
-					      'At 0.0001 ETH per day', 'Totalling 0.003 ETH currently valued at ~$50 USD' ]}
-				  	/>
+
+				    <Message info>
+				        <Message.Header>Summary</Message.Header>
+				        <p>Habit Name: {this.state.choosenGoal}</p>
+				        <p>For {this.state.numDays} days</p>
+				        <p>At 0.001 ETH per day</p>
+				        <p>Totalling 0.003 ETH currently valued at ~$50 USD</p>
+			      	</Message>
+
 			        <Form.Field control={Button}>Submit</Form.Field>
 			    </Form>
 			</React.Fragment>

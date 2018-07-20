@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Container, Message } from 'semantic-ui-react';
 import web3 from './util/getWeb3.js';
 
 // UI Components
-import Layout from './components/Layout';
+import Header from './components/Header';
 
 //Contracts
 import getContract from './util/getContract.js';
@@ -48,11 +48,10 @@ class App extends Component {
 
   async getOwner() {
     const deployedBy = await this.pledgeFactoryInstance.deployedBy();
-    console.log('WONEERRR ehreeee: ',deployedBy);
     this.setState({ deployedBy: deployedBy });
   }
 
-  renderAccounts() {
+  /*renderAccounts() {
     var allAccts = this.state.web3Accounts;
     return (
       <ul>
@@ -63,38 +62,44 @@ class App extends Component {
         })}
       </ul>
     )
-  }
+  }*/
 
   renderProviderInfo() {
     return (
-      <Card fluid color='red'>
-        <Card.Content>
-          <Card.Header>
-            <div>Deployed by: {this.state.deployedBy}</div>
-            <br />
-            <div>Current web3 Provider Info</div>
-          </Card.Header>
-          <Card.Meta>Network: {this.state.web3Network}</Card.Meta>
-          <Card.Description>{this.renderAccounts()}</Card.Description>
-        </Card.Content>
-      </Card>
+      <Message info>
+        <Message.Header>Application Info</Message.Header>
+        <p>dApp deployed by: {this.state.deployedBy}</p>
+        <p>You're connected to: <strong>{this.state.web3Network} network</strong></p>
+        <p>Current Metamask Account: <strong>{this.state.web3Accounts[0]}</strong></p>
+        <p></p>
+      </Message>
     )
   }
 
   render() {
     return (
-      <Layout className="App">
+      <React.Fragment>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css"></link>
-        <h3 style={{textAlign: 'center'}}>A dApp to help you be a more fantastic version of you!</h3>
-        <div className="metamaskDiv">
-          {this.renderProviderInfo()}
-        </div>
-        <br />
-        <div>
-          {this.props.children}
-        </div>
         
-      </Layout>
+        <div>
+          {this.renderProviderInfo()}
+          <br />
+        </div>
+
+        <Container>
+          <h3 style={{textAlign: 'center'}}>A dApp to help you be a more fantastic version of you!</h3>
+          <Header />
+          <br />
+          <div>
+            {this.props.children}
+          </div>
+        </Container>
+
+        <div>
+          <br />
+        </div>
+
+      </React.Fragment>
     )
   }
 

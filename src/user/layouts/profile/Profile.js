@@ -58,42 +58,38 @@ class Profile extends Component {
 
   render() {
     return(
-      <main className="container">
-        <div className="pure-g">
-          <div className="pure-u-1-1">
-            <h1 style={{textAlign: 'center'}}>Profile</h1>
-            <p>
-              <strong>Name</strong><br />
-              {this.props.authData.name}
-            </p>
-            <p>
-              <strong>Multi Network ID</strong><br />
-              {this.props.authData.address}
-            </p>
-            <p>
-              <strong>Network Specific Address</strong><br />
-              {this.state.specificNetworkAddress}
-            </p>
-            <p>
-              <strong>Total Pledges</strong><br />
-              {this.state.totalNumPledges}
-            </p>
-            <div>
-              <strong>Your Avatar</strong><br />
-              { (this.state.userAvatar !== '') ? 
-                  this.renderUserAvatar() : 
-                  <p>A default avatar will be created when you create your first pledge.<br/>
-                  Options to customize your avatar appear the more checkins/pledges you finish.<br/><br/>
-                  <strong>Go to your Dashboard now to get started!!</strong>
-                  </p> 
-              }
-            </div>
-            <br/>
-          </div>
+      <React.Fragment>
+        <p>
+          <strong>Name</strong><br />
+          {this.props.authData.name}
+        </p>
+        <p>
+          <strong>Multi Network ID</strong><br />
+          {this.props.authData.address}
+        </p>
+        <p>
+          <strong>Network Specific Address</strong><br />
+          {this.state.specificNetworkAddress}
+        </p>
+        <p>
+          <strong>Total Pledges</strong><br />
+          {this.state.totalNumPledges}
+        </p>
+        <div>
+          <strong>Your Avatar</strong><br />
+          { (this.state.userAvatar !== '') ? 
+              this.renderUserAvatar() : 
+              <p>A default avatar will be created when you create your first pledge.<br/>
+              Options to customize your avatar appear the more checkins/pledges you finish.<br/><br/>
+              <strong>Go to your Dashboard now to get started!!</strong>
+              </p> 
+          }
         </div>
-      </main>
-    )
+      </React.Fragment>
+    );
   }
+
+
 }
 
 module.exports = Profile;

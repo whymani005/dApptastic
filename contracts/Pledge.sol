@@ -13,7 +13,7 @@ contract Pledge {
     uint public value; // in Wei
     uint8 public numDays;
     string public goalType;
-    
+
     bool public isActive;
 
     mapping(uint => bool) public checkins;

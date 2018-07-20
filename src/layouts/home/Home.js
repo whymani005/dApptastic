@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Statistic, Message, Icon } from 'semantic-ui-react';
 import AvatarCard from '../../components/AvatarCard';
 
 //Contracts
@@ -20,6 +20,7 @@ class Home extends Component {
     this.state = {
       totalPledgeCount: 0,
       totalPledgedAmt: 0,
+      totalUsersCount: 0,
       allPledges: [],
       isLoading: true
     };
@@ -30,15 +31,15 @@ class Home extends Component {
   async componentDidMount() {
     this.pledgeFactoryInstance = await getContract(PledgeFactory);
 
-    //Platform Summary
-    const totalPledgeCount = await this.pledgeFactoryInstance.allTimePledgedCount();
-    const totalPledgedAmt = await this.pledgeFactoryInstance.allTimePledgedAmt();
+    //Platform Stats
+    const dappSummary = await this.pledgeFactoryInstance.getSummary();
 
     //Get All Pledges
     const items = await this.fetchAllPledges();
 
-    this.setState({ totalPledgeCount: totalPledgeCount, 
-                    totalPledgedAmt: totalPledgedAmt,
+    this.setState({ totalPledgeCount: dappSummary[0], 
+                    totalPledgedAmt: dappSummary[1],
+                    totalUsersCount: dappSummary[2],
                     allPledges: items, isLoading: false
                   });
   }
@@ -85,7 +86,7 @@ class Home extends Component {
     }
 
     //JUST RANDOM
-    const names = ['TEST_Harvey', 'TEST_Loius', 'TEST_Jessica', 'TEST_Donna'];
+    const names = ['TEST_Harvey', 'TEST_Loius', 'TEST_Donna'];
     const totalPledgedAmt = 0;
     for(var a=0; a<names.length; a++) {
       const firstAvaInfo = this.generateFirstTimeRandAvatar();
@@ -106,7 +107,7 @@ class Home extends Component {
         <div className="pure-g">
           <div className="pure-u-1-1">
             <h2 style={{textAlign: 'center'}}>Current Pledges</h2>
-            <h4 style={{textAlign: 'center'}}>Total pledges: {this.state.totalPledgeCount.toString()} with total pledged amount: {web3.utils.fromWei(this.state.totalPledgedAmt.toString(), 'ether')} ETH</h4>
+            {this.renderInfoStats()}
           </div>
           <br/>
           <div>
@@ -117,12 +118,36 @@ class Home extends Component {
     );
   }
 
+  renderInfoStats() {
+    return(
+      <Statistic.Group widths='three'>
+        <Statistic>
+          <Statistic.Value>{this.state.totalPledgeCount.toString()}</Statistic.Value>
+          <Statistic.Label>Pledges</Statistic.Label>
+        </Statistic>
+
+        <Statistic>
+          <Statistic.Value>{web3.utils.fromWei(this.state.totalPledgedAmt.toString(), 'ether')} ETH</Statistic.Value>
+          <Statistic.Label>Pledged Amount</Statistic.Label>
+        </Statistic>
+
+        <Statistic>
+          <Statistic.Value>{this.state.totalUsersCount.toString()}</Statistic.Value>
+          <Statistic.Label>Users</Statistic.Label>
+        </Statistic>
+      </Statistic.Group>
+    );
+  }
+
   renderLoading() {
     return(
-      <React.Fragment>
-        <p>Fetching all pledges on this platform from blockchain/IPFS.</p>
-        <p>Lots of talking going on. <strong>Hang on, this may take a minute...</strong></p>
-      </React.Fragment>
+      <Message icon>
+        <Icon name='circle notched' loading />
+        <Message.Content>
+          <Message.Header>Fetching all pledges on this platform from blockchain/IPFS.</Message.Header>
+          Lots of talking going on. <strong>Hang on, this may take a minute...</strong>
+        </Message.Content>
+      </Message>
     );
   }
 

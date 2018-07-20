@@ -75,5 +75,10 @@ contract PledgeFactory {
     function getPledgesForUser(address _uportAddress) public view returns (address[]) {
         return userPledges[_uportAddress];
     }
+
+    function getSummary() public view returns (uint, uint, uint) {
+        return (allTimePledgedCount, allTimePledgedAmt, users.length);
+    }
+    
 }
 
