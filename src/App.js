@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Message } from 'semantic-ui-react';
+import { Container, Message, Icon } from 'semantic-ui-react';
 import web3 from './util/getWeb3.js';
 
 // UI Components
 import Header from './components/Header';
 
-//Contracts
-//import getContract from './util/getContract.js';
-//import PledgeFactory from "../build/contracts/PledgeFactory.json";
-
+var SUPPORTED_NETWORKS = 'Private,Rinkeby';
 
 class App extends Component {
 
@@ -24,30 +21,44 @@ class App extends Component {
     }
   }
 
+  async updateInterface() {
+    const networkId = this.getNetworkName(await web3.eth.net.getNetworkType());
+    const accounts = await web3.eth.getAccounts();
+    this.setState({ web3Account: accounts[0], web3Network: networkId});
+  }
+
+
   constructor(props) {
     super(props);
 
     this.state = {
       web3Network: 'Unknown',
-      web3Accounts: [],
-      deployedBy: ''
+      web3Account: 'Unknown',
+      deployedBy: 'Unknown'
     };
+
+    this.initAccountRefresher = this.initAccountRefresher.bind(this);
 
   }
 
-  async componentDidMount() {
-    const networkId = this.getNetworkName(await web3.eth.net.getNetworkType());
-    const accounts = await web3.eth.getAccounts();
+  initAccountRefresher() {
+    setInterval(function() {
+      web3.eth.getAccounts().then(result => {
+        if (result[0] !== this.state.web3Account) {
+          this.updateInterface();
+        }
+      });
+    }.bind(this), 1000) 
+  }
 
-    /*this.pledgeFactoryInstance = await getContract(PledgeFactory);
-    const deployedBy = await this.pledgeFactoryInstance.deployedBy();*/
-    this.setState({ web3Accounts: accounts, web3Network: networkId});
+  async componentDidMount() {
+    this.initAccountRefresher();
   }
 
   renderProviderInfo() {
     return (
       <Message info>
-        <p style={{textAlign: 'center'}}>Connected to <strong>{this.state.web3Network}</strong> network using Metamask account <strong>{this.state.web3Accounts[0]}</strong></p>
+        <p style={{textAlign: 'center'}}>Connected to <strong>{this.state.web3Network}</strong> network using Metamask account <strong>{this.state.web3Account}</strong></p>
       </Message>
     )
   }
@@ -64,7 +75,10 @@ class App extends Component {
         <Container>
           <Header />
           <br />
-          {this.props.children}
+          {
+            (SUPPORTED_NETWORKS.includes(this.state.web3Network)) ? 
+            this.props.children : this.renderUnknownNetwork()
+          }
         </Container>
 
         <div>
@@ -73,6 +87,21 @@ class App extends Component {
 
       </React.Fragment>
     )
+  }
+
+  renderUnknownNetwork() {
+    return(
+      <Message icon negative>
+        <Icon name='warning sign' />
+        <Message.Content>
+          <Message.Header>Network Error!</Message.Header>
+            You appear to be connected to the Ethereum <strong>{this.state.web3Network} </strong>
+            network. This dApp currently only works on {SUPPORTED_NETWORKS} networks. 
+            Please <strong>switch to a local network running on http://127.0.0.1:8545 </strong> 
+            in order to use this dApp.
+        </Message.Content>
+      </Message>
+    );
   }
 
 }
