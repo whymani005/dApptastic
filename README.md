@@ -1,6 +1,6 @@
 *WORK IN PROGRESS*
 
-# dApptastic
+# ÐApptastic
 A dApp to help you become a more fantastic version of you!\
 You can find a detailed design wiki [here](https://github.com/whymani005/dApptastic/wiki).
 
