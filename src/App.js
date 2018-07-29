@@ -77,7 +77,7 @@ class App extends Component {
           <br />
           {
             (SUPPORTED_NETWORKS.includes(this.state.web3Network)) ? 
-            this.props.children : this.renderUnknownNetwork()
+            this.props.children : this.renderNetworkError()
           }
         </Container>
 
@@ -89,7 +89,7 @@ class App extends Component {
     )
   }
 
-  renderUnknownNetwork() {
+  renderNetworkError() {
     return(
       <Message icon negative>
         <Icon name='warning sign' />

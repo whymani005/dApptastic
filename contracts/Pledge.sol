@@ -6,11 +6,14 @@ pragma solidity ^0.4.24;
  */
 contract Pledge {
         
-    address public fundedFrom; //metamask wallet address
+    
     address public uportUser; //uport MNID.decode'd address
     
     uint public creationDate;
     uint public value; // in Wei
+
+    //iPFS
+    address public fundedFrom; //metamask wallet address
     uint8 public numDays;
     string public goalType;
 
@@ -23,7 +26,8 @@ contract Pledge {
         _; 
     }
     
-    constructor(address _uportUser, address _fundedFrom, uint _totPledgedAmt, string _goalType, uint8 _numDays) public payable {
+    constructor(address _uportUser, address _fundedFrom, 
+                uint _totPledgedAmt, string _goalType, uint8 _numDays) public payable {
         require(msg.value >= _totPledgedAmt);
         uportUser = _uportUser;
         fundedFrom = _fundedFrom;

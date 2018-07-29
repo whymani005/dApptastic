@@ -68,19 +68,31 @@ class CreatePledge extends Component {
 		const numDays = this.state.numDays.trim();
     	const accounts = await web3.eth.getAccounts();
 
-    	const newPledge = await this.pledgeFactoryInstance.createPledge.sendTransaction(this.props.userAddress, 
-    														totPledgedAmt, this.state.choosenGoal, numDays,
-    														this.props.firstEverPledge, hash,
-    														{from: accounts[0], 
-    															value: web3.utils.toWei(totPledgedAmt, 'ether'), 
-    															gas:1100000
-    														})
+    	try {
+			const newPledge = await this.pledgeFactoryInstance.createPledge.sendTransaction(
+																this.props.userAddress, 
+																totPledgedAmt, 
+																this.state.choosenGoal, 
+																numDays, 
+																this.props.firstEverPledge, 
+																hash,
+	    														{from: accounts[0], 
+	    															value: web3.utils.toWei(totPledgedAmt, 'ether'), 
+	    															gas:1100000
+	    														}
+															);
 
-		console.log('I CREATED A NEW PLEDGE txn: ', newPledge);
+			console.log('I CREATED A NEW PLEDGE txn: ', newPledge);
 
-		this.props.callbackMet();
-		this.setState({ stepStatus: 'Pledge created! Go to profile to view your default avatar.' });
-		console.log('--------done--------');
+			this.props.callbackMet();
+			this.setState({ stepStatus: 'Pledge created! Go to profile to view your default avatar.' });
+			console.log('--------done--------');
+    	} catch(err) {
+    		console.log('[CreatePledge.js][createNewPledgeSol] - ', err);
+    		this.setState({ stepStatus: err });
+    	}
+
+    	
   	}
 
 

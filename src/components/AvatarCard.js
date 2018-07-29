@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Icon } from 'semantic-ui-react';
+import { Card, Icon, Label } from 'semantic-ui-react';
 import Avatar from 'avataaars';
 
 import getAvatarDictFromStr from '../util/common.js';
@@ -7,6 +7,18 @@ import web3 from '../util/getWeb3.js';
 
 
 class AvatarCard extends Component {
+
+	renderActiveLabel() {
+		return(
+			<Label as='a' color='green' ribbon>Active</Label>
+		);
+	}
+
+	renderInActiveLabel() {
+		return(
+			<Label as='a' color='red' ribbon>Closed</Label>
+		);
+	}
 
 	render() {
 		var items = getAvatarDictFromStr(this.props.userAvatar);
@@ -17,6 +29,7 @@ class AvatarCard extends Component {
 		return(
 			<Card>
 		      <Card.Content>
+		      	{this.props.isActive ? this.renderActiveLabel() : this.renderInActiveLabel()}
 		        <Card.Header>
 		        	<div>
 						<Avatar style={{width:'250px',height:'250px'}} avatarStyle='Circle' 

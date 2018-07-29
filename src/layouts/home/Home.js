@@ -77,10 +77,11 @@ class Home extends Component {
       const totalPledgedAmt = realPledges[i][1];
       const numDays = realPledges[i][2];
       const goalType = realPledges[i][3];
+      const isActive = realPledges[i][4];
       const userAddress = realPledges[i]['userAddress'].replace(/^(.{25}).+/, "$1…");
       const userAvatarDetails = realPledges[i]['userDetails']['userAvatar'];
 
-      items.push(<AvatarCard goalType={goalType} key={createTime} 
+      items.push(<AvatarCard isActive={isActive} goalType={goalType} key={createTime} 
                   userAddress={userAddress} userAvatar={userAvatarDetails} 
                   createdAt={createTime} numDays={numDays} totalPledgedAmt={totalPledgedAmt}/>);
     }
