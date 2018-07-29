@@ -10,6 +10,7 @@ You can find a detailed design wiki [here](https://github.com/whymani005/dApptas
 * `npm install ganace-cli -g`
 * `cd /into/project/root`
 * `npm install`. Creates node_modules directory
+* `truffle install`. Creates installed_contracts directory
 
 ### Run <h2>
 * In terminal `ganache-cli`. Leave terminal tab open
