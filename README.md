@@ -1,7 +1,8 @@
 *WORK IN PROGRESS*
 
-# dApptastic
-A dApp to help you become a more fantastic version of you!
+# ÐApptastic
+A dApp to help you become a more fantastic version of you!\
+You can find a detailed design wiki [here](https://github.com/whymani005/dApptastic/wiki).
 
 ### Setup <h2>
 * `git clone`
@@ -20,6 +21,7 @@ A dApp to help you become a more fantastic version of you!
 * `truffle test`. Will run all tests
 * `npm run start`. Serves up UI on localhost:3000
 
-### Info <h2>
-If you have problems, delete `/build` and maybe `/node_modules` and re-run the steps above.\
-You can find the design wiki [here](https://github.com/whymani005/dApptastic/wiki).
+### Troubleshooting <h2>
+* If you have problems, delete `/build` and maybe `/node_modules` and re-run the steps above.\
+* If you have problems logging in from UI using uport:
+  * Check the console log of the browser: If the error is related to JWT timestamp - try updating your UPort app and try again. Not much documentation on this, but here is a [ref](https://medium.com/uport/uport-library-breaking-change-8a9fdd3b7059). This issue has been intermittent.
