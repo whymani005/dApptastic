@@ -14,7 +14,7 @@ You can find a detailed design wiki [here](https://github.com/whymani005/dApptas
 
 ### Run <h2>
 * In terminal `ganache-cli`. Leave terminal tab open
-* In browser, login to Metamask with the seed phrase on 127.0.0.0:8454, and verify accounts created match what's shown.
+* In browser, login to Metamask with the seed phrase on `http://127.0.0.1:8545`, and verify accounts created match what's shown.
 * In another terminal `cd path/to/project`
 * `truffle compile`. Will compile all contracts and create build directory
 * `truffle migrate --reset --network local`. Will deploy all contracts to your locally running chain
