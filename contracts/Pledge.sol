@@ -6,52 +6,67 @@ pragma solidity ^0.4.24;
  */
 contract Pledge {
         
-    
-    address public uportUser; //uport MNID.decode'd address
-    
+    address public pledgeOwner; //uport MNID.decode'd address
     uint public creationDate;
-    uint public value; // in Wei
+    uint public numDays;
+    uint public successPerc;
+    bool private isActive;
+    address recipientAddress;
+    
+    uint private mostRecentCheckedInDay;
+    uint private numOfSuccessCheckIns;
 
-    //iPFS
-    address public fundedFrom; //metamask wallet address
-    uint8 public numDays;
+    //Can be stored in IPFS hash
     string public goalType;
-
-    bool public isActive;
-
-    mapping(uint => bool) public checkins;
-
-    modifier restricted(address _uPortId) { 
-        require (uportUser == _uPortId); 
+    address public fundedFrom; //metamask wallet address
+    
+    modifier restricted(address _pledgeOwner) { 
+        require (pledgeOwner == _pledgeOwner); 
         _; 
     }
-    
-    constructor(address _uportUser, address _fundedFrom, 
-                uint _totPledgedAmt, string _goalType, uint8 _numDays) public payable {
+
+    modifier activeOnly() { 
+        require (isActive); 
+        _; 
+    }
+
+    constructor(address _pledgeOwner, address _fundedFrom, 
+                uint _totPledgedAmt, string _goalType, uint _numDays, uint _successPerc) public payable {
         require(msg.value >= _totPledgedAmt);
-        uportUser = _uportUser;
+        require(_successPerc <= 100 && _successPerc >= 0); //floats not fully supported
+        pledgeOwner = _pledgeOwner;
         fundedFrom = _fundedFrom;
-        value = msg.value;
         goalType = _goalType;
         numDays = _numDays;
+        successPerc = _successPerc;
         isActive = true;
         creationDate = now;
     }
     
-    function checkin(address _uPortId, uint _forDay) public restricted(_uPortId) {
-        require(isActive);
-        checkins[_forDay] = true;
+    function checkin(address _uPortId) public restricted(_uPortId) activeOnly() {
+        //https://ethereum.stackexchange.com/questions/37026/how-to-calculate-with-time-and-dates
+        uint forDay = (now - creationDate) / 60 / 60 / 24; 
+        if(mostRecentCheckedInDay < forDay) {
+            mostRecentCheckedInDay = forDay;
+            numOfSuccessCheckIns++;
+        }
     }
 
-    function finishPledge(address _uPortId) public restricted(_uPortId) {
-        require(isActive);
+    function finishPledge(address _uPortId) public restricted(_uPortId) activeOnly() {
         isActive = false;
-        //TODO - payout
-        //const payoutDays = numDays - checkins.length
-    }
 
-    function getSummary() public view returns (uint, uint, uint8, string, bool) {
-        return (creationDate, value, numDays, goalType, isActive);
+        if(numOfSuccessCheckIns >= numDays*(successPerc/100) ) {
+            msg.sender.transfer(address(this).balance);
+        } else {
+            recipientAddress.transfer(address(this).balance);
+        }
     }
-
+    
+    function getBalance() public view returns(uint) {
+        return address(this).balance;
+    }
+    
+    function getSummary() public view returns (uint, uint, uint, string, bool) {
+        return (creationDate, address(this).balance, numDays, goalType, isActive);
+    }
 }

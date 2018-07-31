@@ -34,25 +34,25 @@ contract PledgeFactory {
         deployedBy = msg.sender;
     }
 
-    function createPledge(address _uportAddress, 
-            uint _totPledgedAmt, string _goalType, uint8 _numDays,
-            bool firstPledge, string avatarInfo) public payable returns (address) {
+    function createPledge(address _pledgeOwner, 
+            uint _totPledgedAmt, string _goalType, uint _numDays, uint _successPerc,
+            bool firstPledge, string avatarInfo) public payable returns (address) { //whenNotPaused -> Pausable.sol
 
         //TODO - check that there isn't an active pledge existing for this user
         
-        if(bytes(userProfileInfo[_uportAddress]).length == 0) {
-            users.push(_uportAddress);
+        if(bytes(userProfileInfo[_pledgeOwner]).length == 0) {
+            users.push(_pledgeOwner);
         }
 
-        address newPledge = (new Pledge).value(msg.value)(_uportAddress, msg.sender, 
-                                        _totPledgedAmt, _goalType, _numDays);
+        address newPledge = (new Pledge).value(msg.value)(_pledgeOwner, msg.sender, 
+                                        _totPledgedAmt, _goalType, _numDays, _successPerc);
         
-        userPledges[_uportAddress].push(newPledge);
+        userPledges[_pledgeOwner].push(newPledge);
         allTimePledgedAmt += msg.value; 
         allTimePledgedCount++;
 
         if(firstPledge) {
-            saveProfileInfo(_uportAddress, avatarInfo);
+            saveProfileInfo(_pledgeOwner, avatarInfo);
         }
 
         //send any extra eth back

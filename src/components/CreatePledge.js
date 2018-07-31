@@ -67,13 +67,14 @@ class CreatePledge extends Component {
 		const totPledgedAmt = '0.05'; //in ETHER
 		const numDays = this.state.numDays.trim();
     	const accounts = await web3.eth.getAccounts();
+    	const successPerc = 60;
 
     	try {
 			const newPledge = await this.pledgeFactoryInstance.createPledge.sendTransaction(
 																this.props.userAddress, 
 																totPledgedAmt, 
 																this.state.choosenGoal, 
-																numDays, 
+																numDays, successPerc, 
 																this.props.firstEverPledge, 
 																hash,
 	    														{from: accounts[0], 
